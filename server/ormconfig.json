@@ -1,0 +1,11 @@
+{
+	"username": "postgres",
+	"password": "postgres",
+	"database": "issue-tracker",
+	"port": 4000,
+	"type": "postgres",
+	"url": "postgres://postgres:postgres@localhost:4000/postgres",
+	"logging": false,
+	"entities": ["src/entities/*"],
+	"migrations": ["src/migrations/*"]
+}
