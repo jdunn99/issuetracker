@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+body {
+	font-family: 'Poppins', Arial, Helvetica, sans-serif;
+	background-color: #f8f9fa !important;
+	overflow-x: hidden;
+}
+
+.right-col {
+	position: relative;
+	overflow-y: scroll;
+	height: 95vh;
+	width: 100%;
+}
+
+.center-col {
+	position: relative;
+	height: 95vh;
+}
+
+@keyframes profileAnim {
+	0% {
+		transform: translateY(5%);
+		opacity: 0.25;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes heroAnimation {
+	0% {
+		transform: translateY(-2%);
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+.hero {
+	animation: heroAnimation 1s forwards 0s ease;
+}
+
+.profileComponent {
+	animation: profileAnim 1s forwards 0s ease;
+}

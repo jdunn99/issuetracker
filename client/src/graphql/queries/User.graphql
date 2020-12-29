@@ -1,0 +1,14 @@
+query User {
+	user {
+		email
+		id
+		role
+		projects {
+			project {
+				id
+				name
+				desc
+			}
+		}
+	}
+}

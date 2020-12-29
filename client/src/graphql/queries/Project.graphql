@@ -1,0 +1,16 @@
+query Project($id: Float!) {
+	project(id: $id) {
+		id
+		name
+		desc
+		createdAt
+		users {
+			id
+			role
+			user {
+				id
+				name
+			}
+		}
+	}
+}
