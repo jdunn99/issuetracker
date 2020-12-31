@@ -1,20 +1,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+html,
 body {
 	font-family: 'Poppins', Arial, Helvetica, sans-serif;
 	background-color: #f8f9fa !important;
 	overflow-x: hidden;
+	height: 100%;
 }
 
 .right-col {
+	padding-top: 3rem;
 	position: relative;
 	overflow-y: scroll;
-	height: 95vh;
+	height: 100vh;
+	padding-bottom: 3rem;
 	width: 100%;
 }
 
 .center-col {
+	padding-top: 3rem;
+	flex: 1;
 	position: relative;
-	height: 95vh;
+	height: 100vh;
+}
+
+.modal-scroll {
+	padding-top: 3rem;
+	position: relative;
+	overflow-y: scroll;
+	height: 80vh;
+	padding-bottom: 3rem;
+	width: 100%;
+}
+
+.navbar {
+	overflow: hidden;
+	position: fixed;
+	top: 0;
+	width: 100%;
 }
 
 @keyframes profileAnim {
@@ -37,10 +59,23 @@ body {
 	}
 }
 
+@keyframes fadeInAnim {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
 .hero {
 	animation: heroAnimation 1s forwards 0s ease;
 }
 
 .profileComponent {
 	animation: profileAnim 1s forwards 0s ease;
+}
+
+.fadeIn {
+	animation: fadeInAnim 0.5s forwards 0s linear;
 }

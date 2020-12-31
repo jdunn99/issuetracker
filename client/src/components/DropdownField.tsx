@@ -3,26 +3,23 @@ import { useField } from 'formik';
 import {
 	FormControl,
 	FormLabel,
-	Input,
+	Select,
 	InputGroup,
 	Icon,
 	InputLeftElement,
-	Textarea,
 } from '@chakra-ui/react';
 import '../App.css';
-
-type FieldProps = InputHTMLAttributes<HTMLInputElement> & {
+type FieldProps = InputHTMLAttributes<HTMLSelectElement> & {
 	label?: string;
 	name: string;
 	icon?: string;
-	area?: boolean;
 };
 
-export const InputField: React.FC<FieldProps> = ({
+export const DropdownField: React.FC<FieldProps> = ({
 	label,
-	area,
 	icon,
 	size: _,
+	children,
 	...props
 }) => {
 	const [field, { error }] = useField(props);
@@ -34,21 +31,17 @@ export const InputField: React.FC<FieldProps> = ({
 				{icon ? (
 					<InputLeftElement children={<Icon name={icon} />} />
 				) : null}
-				{area ? (
-					<Textarea
-						{...field}
-						id={field.name}
-						placeholder={props.placeholder}
-					/>
-				) : (
-					<Input
-						background="#eeeeee"
-						size="sm"
-						{...field}
-						{...props}
-						id={field.name}
-					/>
-				)}
+				<Select
+					variant="filled"
+					background="#eeeeee"
+					size="sm"
+					{...field}
+					{...props}
+					id={field.name}
+					color=""
+				>
+					{children}
+				</Select>
 			</InputGroup>
 			{error ? <small style={{ color: 'red' }}>{error}</small> : null}
 		</FormControl>

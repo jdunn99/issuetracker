@@ -7,7 +7,6 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({
 	background,
-
 	children,
 }) => {
 	return (

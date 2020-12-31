@@ -45,6 +45,8 @@ export class UserResolver {
 				leftJoinAndSelect: {
 					projects: 'user.projects',
 					project: 'projects.project',
+					issues: 'project.issues',
+					createdBy: 'issues.createdBy',
 				},
 			},
 		})) as User;
@@ -63,6 +65,8 @@ export class UserResolver {
 				leftJoinAndSelect: {
 					projects: 'user.projects',
 					project: 'projects.project',
+					issues: 'project.issues',
+					createdBy: 'issues.createdBy',
 				},
 			},
 		});
@@ -141,6 +145,8 @@ export class UserResolver {
 				leftJoinAndSelect: {
 					projects: 'user.projects',
 					project: 'projects.project',
+					issues: 'project.issues',
+					createdBy: 'issues.createdBy',
 				},
 			},
 		})) as User;

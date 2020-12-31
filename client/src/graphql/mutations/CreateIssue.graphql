@@ -1,0 +1,26 @@
+mutation CreateIssue(
+	$name: String!
+	$desc: String!
+	$severity: Float!
+	$projectId: Float!
+) {
+	createIssue(
+		name: $name
+		desc: $desc
+		severity: $severity
+		projectId: $projectId
+	) {
+		name
+		desc
+		severity
+		status
+		id
+		createdAt
+
+		createdBy {
+			email
+			name
+			id
+		}
+	}
+}

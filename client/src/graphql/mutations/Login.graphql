@@ -13,6 +13,19 @@ mutation Login($email: String!, $password: String!) {
 					id
 					name
 					desc
+					issues {
+						name
+						desc
+						severity
+						status
+						id
+						createdAt
+						createdBy {
+							email
+							name
+							id
+						}
+					}
 				}
 			}
 		}

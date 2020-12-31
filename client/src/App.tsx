@@ -2,7 +2,16 @@ import React from 'react';
 import './App.css';
 import { Navbar } from './components/Navbar';
 import { Header } from './components/Header';
-import { Box, Heading, Stack, Text, Flex, Button } from '@chakra-ui/react';
+import {
+	Box,
+	Heading,
+	Stack,
+	Text,
+	Flex,
+	Button,
+	Image,
+	Grid,
+} from '@chakra-ui/react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { Login } from './routes/login';
 import { signup } from './routes/signup';
@@ -55,7 +64,7 @@ function Home() {
 										to={
 											data && data.user
 												? '/profile'
-												: '/login'
+												: '/signin'
 										}
 									>
 										<Button
@@ -96,9 +105,267 @@ function Home() {
 					</Box>
 				</Box>
 			</section>
+			<Box my="8rem">
+				<Features />
+			</Box>
+			<Box my="8rem">
+				<Choose />
+			</Box>
 		</div>
 	);
 }
+
+const Features = () => {
+	return (
+		<Box flex={1} m="auto" fontFamily="Poppins">
+			<Box w="100%" mb={6}>
+				<Flex
+					flexDirection={['column', 'column', 'row', 'row']}
+					mb="4rem"
+					mx="auto"
+					maxW={1200}
+					p={4}
+				>
+					<Flex
+						flexDir="column"
+						justifyContent="center"
+						w={['100%', '100%', '43%', '43%']}
+					>
+						<Heading
+							fontFamily="Poppins"
+							size="lg"
+							lineHeight={1.5}
+							mb={5}
+							textAlign={['center', 'center', 'left', 'left']}
+						>
+							Quickly diagnose bugs.
+						</Heading>
+						<Text
+							mt={2}
+							mr={4}
+							mb={10}
+							textAlign={['center', 'center', 'left', 'left']}
+						>
+							Lorem ipsum dolor sit amet, consectetur adipiscing
+							elit, sed do eiusmod tempor incididunt ut labore et
+							dolore magna aliqua. Ut enim ad minim veniam, quis
+							nostrud exercitation ullamco laboris nisi ut aliquip
+						</Text>
+					</Flex>
+
+					<Flex
+						alignItems="center"
+						justifyContent={[
+							'center',
+							'center',
+							'flex-end',
+							'flex-end',
+						]}
+					>
+						<Image
+							width={['100%', '100%', '80%', '80%']}
+							alt="placeholder"
+						/>
+					</Flex>
+				</Flex>
+			</Box>
+
+			<Box w="100%" mb={6}>
+				<Flex
+					flexDirection={[
+						'column-reverse',
+						'column-reverse',
+						'row',
+						'row',
+					]}
+					mb="4rem"
+					mx="auto"
+					maxW={1200}
+					p={4}
+					pt="6rem"
+				>
+					<Flex
+						alignItems="center"
+						justifyContent={[
+							'center',
+							'center',
+							'flex-start',
+							'flex-start',
+						]}
+					>
+						<Image
+							width={['100%', '100%', '80%', '80%']}
+							alt="placeholder"
+						/>
+					</Flex>
+					<Flex
+						flexDir="column"
+						justifyContent="center"
+						w={['100%', '100%', '43%', '43%']}
+					>
+						<Heading
+							fontFamily="Poppins"
+							size="lg"
+							lineHeight={1.5}
+							mb={5}
+							textAlign={['center', 'center', 'left', 'left']}
+						>
+							Improve your workflow.
+						</Heading>
+						<Text
+							mt={2}
+							mr={4}
+							fontSize="16px"
+							mb={10}
+							textAlign={['center', 'center', 'left', 'left']}
+						>
+							Lorem ipsum dolor sit amet, consectetur adipiscing
+							elit, sed do eiusmod tempor incididunt ut labore et
+							dolore magna aliqua. Ut enim ad minim veniam, quis
+							nostrud exercitation ullamco laboris nisi ut aliquip
+						</Text>
+					</Flex>
+				</Flex>
+			</Box>
+			<Box w="100%">
+				<Flex
+					flexDirection={['column', 'column', 'row', 'row']}
+					mb="4rem"
+					mx="auto"
+					maxW={1200}
+					p={4}
+					pt="6rem"
+				>
+					<Flex
+						flexDir="column"
+						justifyContent="center"
+						w={['100%', '100%', '43%', '43%']}
+					>
+						<Heading
+							fontFamily="Poppins"
+							size="lg"
+							lineHeight={1.5}
+							mb={5}
+							textAlign={['center', 'center', 'left', 'left']}
+						>
+							Solve your problems.
+						</Heading>
+						<Text
+							mt={2}
+							mr={4}
+							mb={10}
+							textAlign={['center', 'center', 'left', 'left']}
+						>
+							Lorem ipsum dolor sit amet, consectetur adipiscing
+							elit, sed do eiusmod tempor incididunt ut labore et
+							dolore magna aliqua. Ut enim ad minim veniam, quis
+							nostrud exercitation ullamco laboris nisi ut aliquip
+						</Text>
+					</Flex>
+
+					<Flex
+						alignItems="center"
+						justifyContent={[
+							'center',
+							'center',
+							'flex-end',
+							'flex-end',
+						]}
+					>
+						<Image
+							width={['100%', '100%', '80%', '80%']}
+							alt="placeholder"
+						/>
+					</Flex>
+				</Flex>
+			</Box>
+		</Box>
+	);
+};
+
+const Choose = () => {
+	return (
+		<Box flex={1} m="auto" maxW={1200} p={4} fontFamily="Poppins">
+			<Heading
+				textAlign="center"
+				fontFamily="Poppins"
+				fontSize={24}
+				mb={8}
+			>
+				Why Choose Us?
+			</Heading>
+			<Grid templateColumns={['1fr', '1fr', 'repeat(3, 1fr)']}>
+				<Stack mb="4rem">
+					<Heading
+						mt="2rem"
+						size="md"
+						textAlign={['center', 'center', 'left', 'left']}
+						fontFamily="Poppins"
+						color="#7209B7"
+					>
+						It's Free
+					</Heading>
+					<Text
+						mt={2}
+						color="gray.500"
+						mr={4}
+						textAlign={['center', 'center', 'left', 'left']}
+					>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+						sed do eiusmod tempor incididunt ut labore et dolore
+						magna aliqua.
+					</Text>
+				</Stack>
+
+				<Stack mb="4rem">
+					<Heading
+						mt="2rem"
+						color="#7209B7"
+						size="md"
+						textAlign={['center', 'center', 'left', 'left']}
+						fontFamily="Poppins"
+					>
+						It's Easy to Use
+					</Heading>
+					<Text
+						mt={2}
+						color="gray.500"
+						mr={4}
+						fontFamily="Poppins"
+						textAlign={['center', 'center', 'left', 'left']}
+					>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+						sed do eiusmod tempor incididunt ut labore et dolore
+						magna aliqua.
+					</Text>
+				</Stack>
+
+				<Stack mb="2rem">
+					<Heading
+						mt="2rem"
+						color="#7209B7"
+						size="md"
+						textAlign={['center', 'center', 'left', 'left']}
+						fontFamily="Poppins"
+					>
+						It's Secure
+					</Heading>
+					<Text
+						mt={2}
+						color="gray.500"
+						mr={4}
+						fontFamily="Poppins"
+						textAlign={['center', 'center', 'left', 'left']}
+					>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+						sed do eiusmod tempor incididunt ut labore et dolore
+						magna aliqua.
+					</Text>
+				</Stack>
+			</Grid>
+		</Box>
+	);
+};
 
 function App() {
 	return (

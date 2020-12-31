@@ -57,7 +57,7 @@ export class Issue extends BaseEntity {
 		enum: Status,
 	})
 	@Field(() => Status)
-	status!: Severity;
+	status!: Status;
 
 	@ManyToOne(() => Project, (project) => project.issues)
 	@Field(() => Project)

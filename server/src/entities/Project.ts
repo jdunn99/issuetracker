@@ -30,8 +30,8 @@ export class Project extends BaseEntity {
 	desc: string;
 
 	@OneToMany(() => Issue, (issue) => issue.project, { cascade: true })
-	@Field(() => [Project])
-	issues: Project[];
+	@Field(() => [Issue])
+	issues: Issue[];
 
 	@CreateDateColumn()
 	@Field(() => Date)

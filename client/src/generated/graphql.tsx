@@ -17,6 +17,7 @@ export type Query = {
   __typename?: 'Query';
   user?: Maybe<User>;
   users: Array<User>;
+  issues: Array<Issue>;
   projects: Array<Project>;
   project?: Maybe<Project>;
 };
@@ -80,7 +81,7 @@ export type Project = {
   users: Array<ProjectRole>;
   name: Scalars['String'];
   desc: Scalars['String'];
-  issues: Array<Project>;
+  issues: Array<Issue>;
   createdAt: Scalars['DateTime'];
 };
 
@@ -98,6 +99,8 @@ export type Mutation = {
   login: UserResponse;
   changePermissions: UserResponse;
   deleteUsers: Scalars['Boolean'];
+  createIssue?: Maybe<Issue>;
+  deleteIssues: Scalars['Boolean'];
   createProject: Project;
   deleteProjects: Scalars['Boolean'];
 };
@@ -124,6 +127,14 @@ export type MutationChangePermissionsArgs = {
 };
 
 
+export type MutationCreateIssueArgs = {
+  severity: Scalars['Float'];
+  desc: Scalars['String'];
+  projectId: Scalars['Float'];
+  name: Scalars['String'];
+};
+
+
 export type MutationCreateProjectArgs = {
   desc: Scalars['String'];
   name: Scalars['String'];
@@ -140,6 +151,55 @@ export type Error = {
   field: Scalars['String'];
   message: Scalars['String'];
 };
+
+export type CreateIssueMutationVariables = Exact<{
+  name: Scalars['String'];
+  desc: Scalars['String'];
+  severity: Scalars['Float'];
+  projectId: Scalars['Float'];
+}>;
+
+
+export type CreateIssueMutation = (
+  { __typename?: 'Mutation' }
+  & { createIssue?: Maybe<(
+    { __typename?: 'Issue' }
+    & Pick<Issue, 'name' | 'desc' | 'severity' | 'status' | 'id' | 'createdAt'>
+    & { createdBy: (
+      { __typename?: 'User' }
+      & Pick<User, 'email' | 'name' | 'id'>
+    ) }
+  )> }
+);
+
+export type CreateProjectMutationVariables = Exact<{
+  name: Scalars['String'];
+  desc: Scalars['String'];
+}>;
+
+
+export type CreateProjectMutation = (
+  { __typename?: 'Mutation' }
+  & { createProject: (
+    { __typename?: 'Project' }
+    & Pick<Project, 'id' | 'name' | 'desc' | 'createdAt'>
+    & { users: Array<(
+      { __typename?: 'ProjectRole' }
+      & Pick<ProjectRole, 'id' | 'role'>
+      & { user: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'name'>
+      ) }
+    )>, issues: Array<(
+      { __typename?: 'Issue' }
+      & Pick<Issue, 'name' | 'desc' | 'severity' | 'status' | 'id' | 'createdAt'>
+      & { createdBy: (
+        { __typename?: 'User' }
+        & Pick<User, 'email' | 'name' | 'id'>
+      ) }
+    )> }
+  ) }
+);
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
@@ -162,6 +222,14 @@ export type LoginMutation = (
         & { project: (
           { __typename?: 'Project' }
           & Pick<Project, 'id' | 'name' | 'desc'>
+          & { issues: Array<(
+            { __typename?: 'Issue' }
+            & Pick<Issue, 'name' | 'desc' | 'severity' | 'status' | 'id' | 'createdAt'>
+            & { createdBy: (
+              { __typename?: 'User' }
+              & Pick<User, 'email' | 'name' | 'id'>
+            ) }
+          )> }
         ) }
       )> }
     )> }
@@ -185,6 +253,13 @@ export type ProjectQuery = (
         { __typename?: 'User' }
         & Pick<User, 'id' | 'name'>
       ) }
+    )>, issues: Array<(
+      { __typename?: 'Issue' }
+      & Pick<Issue, 'name' | 'desc' | 'severity' | 'status' | 'id' | 'createdAt'>
+      & { createdBy: (
+        { __typename?: 'User' }
+        & Pick<User, 'email' | 'name' | 'id'>
+      ) }
     )> }
   )> }
 );
@@ -202,12 +277,127 @@ export type UserQuery = (
       & { project: (
         { __typename?: 'Project' }
         & Pick<Project, 'id' | 'name' | 'desc'>
+        & { issues: Array<(
+          { __typename?: 'Issue' }
+          & Pick<Issue, 'name' | 'desc' | 'severity' | 'status' | 'id' | 'createdAt'>
+          & { createdBy: (
+            { __typename?: 'User' }
+            & Pick<User, 'email' | 'name' | 'id'>
+          ) }
+        )> }
       ) }
     )> }
   )> }
 );
 
 
+export const CreateIssueDocument = gql`
+    mutation CreateIssue($name: String!, $desc: String!, $severity: Float!, $projectId: Float!) {
+  createIssue(
+    name: $name
+    desc: $desc
+    severity: $severity
+    projectId: $projectId
+  ) {
+    name
+    desc
+    severity
+    status
+    id
+    createdAt
+    createdBy {
+      email
+      name
+      id
+    }
+  }
+}
+    `;
+export type CreateIssueMutationFn = Apollo.MutationFunction<CreateIssueMutation, CreateIssueMutationVariables>;
+
+/**
+ * __useCreateIssueMutation__
+ *
+ * To run a mutation, you first call `useCreateIssueMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateIssueMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createIssueMutation, { data, loading, error }] = useCreateIssueMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      desc: // value for 'desc'
+ *      severity: // value for 'severity'
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useCreateIssueMutation(baseOptions?: Apollo.MutationHookOptions<CreateIssueMutation, CreateIssueMutationVariables>) {
+        return Apollo.useMutation<CreateIssueMutation, CreateIssueMutationVariables>(CreateIssueDocument, baseOptions);
+      }
+export type CreateIssueMutationHookResult = ReturnType<typeof useCreateIssueMutation>;
+export type CreateIssueMutationResult = Apollo.MutationResult<CreateIssueMutation>;
+export type CreateIssueMutationOptions = Apollo.BaseMutationOptions<CreateIssueMutation, CreateIssueMutationVariables>;
+export const CreateProjectDocument = gql`
+    mutation CreateProject($name: String!, $desc: String!) {
+  createProject(name: $name, desc: $desc) {
+    id
+    name
+    desc
+    createdAt
+    users {
+      id
+      role
+      user {
+        id
+        name
+      }
+    }
+    issues {
+      name
+      desc
+      severity
+      status
+      id
+      createdAt
+      createdBy {
+        email
+        name
+        id
+      }
+    }
+  }
+}
+    `;
+export type CreateProjectMutationFn = Apollo.MutationFunction<CreateProjectMutation, CreateProjectMutationVariables>;
+
+/**
+ * __useCreateProjectMutation__
+ *
+ * To run a mutation, you first call `useCreateProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProjectMutation, { data, loading, error }] = useCreateProjectMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      desc: // value for 'desc'
+ *   },
+ * });
+ */
+export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOptions<CreateProjectMutation, CreateProjectMutationVariables>) {
+        return Apollo.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, baseOptions);
+      }
+export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
+export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
+export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
@@ -224,6 +414,19 @@ export const LoginDocument = gql`
           id
           name
           desc
+          issues {
+            name
+            desc
+            severity
+            status
+            id
+            createdAt
+            createdBy {
+              email
+              name
+              id
+            }
+          }
         }
       }
     }
@@ -271,6 +474,19 @@ export const ProjectDocument = gql`
         name
       }
     }
+    issues {
+      name
+      desc
+      severity
+      status
+      id
+      createdAt
+      createdBy {
+        email
+        name
+        id
+      }
+    }
   }
 }
     `;
@@ -311,6 +527,19 @@ export const UserDocument = gql`
         id
         name
         desc
+        issues {
+          name
+          desc
+          severity
+          status
+          id
+          createdAt
+          createdBy {
+            email
+            name
+            id
+          }
+        }
       }
     }
   }

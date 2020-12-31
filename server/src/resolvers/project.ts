@@ -16,6 +16,8 @@ export class ProjectResolver {
 				leftJoinAndSelect: {
 					users: 'project.users',
 					user: 'users.user',
+					issues: 'project.issues',
+					createdBy: 'issues.createdBy',
 				},
 			},
 		});
@@ -31,6 +33,8 @@ export class ProjectResolver {
 				leftJoinAndSelect: {
 					users: 'project.users',
 					user: 'users.user',
+					issues: 'project.issues',
+					createdBy: 'issues.createdBy',
 				},
 			},
 		})) as Project;
@@ -57,6 +61,7 @@ export class ProjectResolver {
 		newProject.name = name;
 		newProject.desc = desc;
 		newProject.users = [projectRole];
+		newProject.issues = [];
 		await connection.manager.save(newProject);
 
 		return newProject;
@@ -64,6 +69,7 @@ export class ProjectResolver {
 
 	@Mutation(() => Boolean)
 	async deleteProjects(): Promise<Boolean> {
+		await getRepository(ProjectRole).delete({});
 		await getRepository(Project).delete({});
 
 		return true;

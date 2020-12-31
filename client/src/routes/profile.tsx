@@ -7,19 +7,9 @@ import {
 	Text,
 	Grid,
 	Avatar,
-	Badge,
-	Modal,
-	ModalOverlay,
-	ModalBody,
-	ModalContent,
-	ModalHeader,
-	useDisclosure,
-	ModalCloseButton,
-	Stack,
 } from '@chakra-ui/react';
 import { Navbar } from '../components/Navbar';
-import { InputField } from '../components/InputField';
-import { Formik, Form } from 'formik';
+
 import {
 	Table,
 	TableBody,
@@ -32,6 +22,7 @@ import { Sidebar } from '../components/Sidebar';
 import { UserQuery, useUserQuery } from '../generated/graphql';
 import { useHistory } from 'react-router-dom';
 import { usePersistedState } from '../util/persistState';
+import { Search } from '../components/Search';
 
 interface profileProps {}
 
@@ -47,12 +38,12 @@ export const Profile: React.FC<profileProps> = () => {
 			case 'Projects':
 				return <Projects data={data} />;
 			case 'Issues':
-				return <Issues />;
+				return <Issues data={data} />;
 		}
 	}
 
 	return (
-		<Box>
+		<Box maxH="100vh" overflowY="hidden">
 			<main>
 				<Navbar overview />
 				<Flex>
@@ -171,6 +162,7 @@ const Dashboard: React.FC<ProjectsProps> = ({ data }) => {
 					rounded="lg"
 					w="100%"
 					h={341}
+					mb={8}
 				>
 					<Heading size="md">Top Active Issues</Heading>
 				</Box>
@@ -193,21 +185,7 @@ const Projects: React.FC<ProjectsProps> = ({ data }) => {
 					<Heading size="lg">Projects</Heading>
 
 					<Box mx={4}>
-						<Formik
-							initialValues={{
-								email: '',
-								password: '',
-							}}
-							onSubmit={async (values, { setErrors }) => {}}
-						>
-							<Form>
-								<InputField
-									type="text"
-									name="text"
-									placeholder="Search"
-								/>
-							</Form>
-						</Formik>
+						<Search userData={data} />
 					</Box>
 				</Flex>
 				<Box ml="auto">
@@ -218,6 +196,7 @@ const Projects: React.FC<ProjectsProps> = ({ data }) => {
 						_hover={{ background: '#480972' }}
 						color="#F8F9FA"
 						size="sm"
+						onClick={() => history.push('/project/create')}
 					>
 						Add Project
 						<Box
@@ -269,7 +248,10 @@ const Projects: React.FC<ProjectsProps> = ({ data }) => {
 												fontSize="sm"
 												fontWeight="bold"
 											>
-												{proj.project.name}
+												{proj.project.desc.substr(
+													0,
+													125
+												)}
 											</Text>
 										</TableCell>
 										<TableCell>
@@ -277,10 +259,7 @@ const Projects: React.FC<ProjectsProps> = ({ data }) => {
 												fontSize="sm"
 												fontWeight="bold"
 											>
-												{proj.project.desc.substr(
-													0,
-													125
-												)}
+												{proj.project.issues.length}
 											</Text>
 										</TableCell>
 										<TableCell>
@@ -301,76 +280,60 @@ const Projects: React.FC<ProjectsProps> = ({ data }) => {
 	);
 };
 
-const Issues: React.FC = () => {
+const Issues: React.FC<ProjectsProps> = ({ data }) => {
 	return (
 		<Box mt="5rem" px={5} fontFamily="Poppins" className="profileComponent">
 			<Heading size="lg">Issues Overview</Heading>
-			<Box my="3rem">
-				<Text my={1}>Temp Project</Text>
-				<Box boxShadow="lg">
-					<Table>
-						<TableHead background="#eeeeee">
-							<TableHeader>Name</TableHeader>
-							<TableHeader>Level</TableHeader>
-							<TableHeader>Status</TableHeader>
-							<TableHeader>Created At</TableHeader>
-							<TableHeader>Created By</TableHeader>
-						</TableHead>
-						<TableBody>
-							<TableRow>
-								<TableCell>
-									<Text>Issue</Text>
-								</TableCell>
-								<TableCell>
-									<Text color="#C6BF1F">Medium</Text>
-								</TableCell>
-								<TableCell>
-									<Text>To-Do</Text>
-								</TableCell>
-								<TableCell>
-									<Text>12/23/2020 5:30 PM</Text>
-								</TableCell>
-								<TableCell>
-									<Text>Jack Dunn</Text>
-								</TableCell>
-							</TableRow>
-						</TableBody>
-					</Table>
+			{data?.user?.projects.map((proj) => (
+				<Box my="3rem">
+					<Text my={1}>{proj.project.name}</Text>
+					<Box boxShadow="lg">
+						<Table>
+							<TableHead background="#eeeeee">
+								<TableHeader>Name</TableHeader>
+								<TableHeader>Level</TableHeader>
+								<TableHeader>Status</TableHeader>
+								<TableHeader>Created At</TableHeader>
+								<TableHeader>Created By</TableHeader>
+							</TableHead>
+							<TableBody>
+								{proj.project.issues.map((issue) => (
+									<TableRow
+										_hover={{
+											background: '#eeeeee',
+										}}
+										cursor="pointer"
+									>
+										<TableCell>
+											<Text>{issue.name}</Text>
+										</TableCell>
+										<TableCell>
+											<Text>
+												{issue.severity.toString()}
+											</Text>
+										</TableCell>
+										<TableCell>
+											<Text>
+												{issue.status.toString()}
+											</Text>
+										</TableCell>
+										<TableCell>
+											<Text>
+												{new Date(
+													issue.createdAt.toString()
+												).toLocaleString()}
+											</Text>
+										</TableCell>
+										<TableCell>
+											<Text>{issue.createdBy.name}</Text>
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</Box>
 				</Box>
-			</Box>
-			<Box my="3rem">
-				<Text my={1}>Temp Project</Text>
-				<Box boxShadow="lg">
-					<Table>
-						<TableHead background="#eeeeee">
-							<TableHeader>Name</TableHeader>
-							<TableHeader>Level</TableHeader>
-							<TableHeader>Status</TableHeader>
-							<TableHeader>Created At</TableHeader>
-							<TableHeader>Created By</TableHeader>
-						</TableHead>
-						<TableBody>
-							<TableRow>
-								<TableCell>
-									<Text>Issue</Text>
-								</TableCell>
-								<TableCell>
-									<Text color="#C6BF1F">Medium</Text>
-								</TableCell>
-								<TableCell>
-									<Text>To-Do</Text>
-								</TableCell>
-								<TableCell>
-									<Text>12/23/2020 5:30 PM</Text>
-								</TableCell>
-								<TableCell>
-									<Text>Jack Dunn</Text>
-								</TableCell>
-							</TableRow>
-						</TableBody>
-					</Table>
-				</Box>
-			</Box>
+			))}
 		</Box>
 	);
 };

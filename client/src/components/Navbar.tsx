@@ -13,9 +13,9 @@ export const Navbar: React.FC<NavbarProps> = ({ overview = false }) => {
 			maxHeight="5vh"
 			background="#F8F9FA"
 			boxShadow={overview ? 'md' : ''}
-			top={0}
-			zIndex={5}
-			p={overview ? 0 : '2rem'}
+			zIndex={1}
+			className={overview ? 'navbar' : ''}
+			p="2rem"
 		>
 			{overview ? <NavbarOverview /> : <NavbarStandard />}
 		</Flex>
@@ -87,7 +87,7 @@ const NavbarStandard: React.FC = () => {
 
 const NavbarOverview: React.FC = () => {
 	return (
-		<Flex mx="auto" align="center" jusitfy="space-between" w="90%" p={4}>
+		<Flex mx="auto" align="center" jusitfy="space-between" w="90%">
 			<Box>
 				<Link to="/">
 					<Heading fontFamily="Poppins" fontSize={20}>
