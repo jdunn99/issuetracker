@@ -19,6 +19,15 @@ query Project($id: Float!) {
 			status
 			id
 			createdAt
+			comments {
+				id
+				createdAt
+				postedBy {
+					id
+					name
+				}
+				comment
+			}
 			createdBy {
 				email
 				name

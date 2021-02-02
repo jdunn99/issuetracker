@@ -14,6 +14,15 @@ query User {
 					severity
 					status
 					id
+					comments {
+						id
+						createdAt
+						postedBy {
+							id
+							name
+						}
+						comment
+					}
 					createdAt
 					createdBy {
 						email

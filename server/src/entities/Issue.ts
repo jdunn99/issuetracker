@@ -5,11 +5,13 @@ import {
 	Column,
 	BaseEntity,
 	ManyToOne,
+	OneToMany,
 } from 'typeorm';
 import { Field, ObjectType, Int, registerEnumType } from 'type-graphql';
 import { Role, Severity, Status } from '../types';
 import { Project } from './Project';
 import { User } from './User';
+import { Comment } from './Comment';
 
 registerEnumType(Role, {
 	name: 'Role',
@@ -67,5 +69,9 @@ export class Issue extends BaseEntity {
 	@Field(() => User)
 	createdBy: User;
 
-	// TODO: Attachments, Comments, Sub-Issues
+	@OneToMany(() => Comment, (comments) => comments.issue, {
+		cascade: true,
+	})
+	@Field(() => [Comment])
+	comments: Comment[];
 }

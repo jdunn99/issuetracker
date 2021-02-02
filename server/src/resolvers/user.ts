@@ -47,6 +47,8 @@ export class UserResolver {
 					project: 'projects.project',
 					issues: 'project.issues',
 					createdBy: 'issues.createdBy',
+					comments: 'user.comments',
+					postedBy: 'comments.postedBy',
 				},
 			},
 		})) as User;
@@ -67,6 +69,8 @@ export class UserResolver {
 					project: 'projects.project',
 					issues: 'project.issues',
 					createdBy: 'issues.createdBy',
+					comments: 'issues.comments',
+					postedBy: 'comments.postedBy',
 				},
 			},
 		});
@@ -124,6 +128,7 @@ export class UserResolver {
 		newUser.role = role;
 		newUser.projects = [];
 		newUser.issues = [];
+		newUser.comments = [];
 
 		await getRepository(User).save(newUser);
 
@@ -147,6 +152,8 @@ export class UserResolver {
 					project: 'projects.project',
 					issues: 'project.issues',
 					createdBy: 'issues.createdBy',
+					comments: 'issues.comments',
+					postedBy: 'comments.postedBy',
 				},
 			},
 		})) as User;

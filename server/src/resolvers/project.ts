@@ -18,6 +18,8 @@ export class ProjectResolver {
 					user: 'users.user',
 					issues: 'project.issues',
 					createdBy: 'issues.createdBy',
+					comments: 'issues.comments',
+					postedBy: 'comments.postedBy',
 				},
 			},
 		});
@@ -35,6 +37,8 @@ export class ProjectResolver {
 					user: 'users.user',
 					issues: 'project.issues',
 					createdBy: 'issues.createdBy',
+					comments: 'issues.comments',
+					postedBy: 'comments.postedBy',
 				},
 			},
 		})) as Project;
@@ -62,6 +66,7 @@ export class ProjectResolver {
 		newProject.desc = desc;
 		newProject.users = [projectRole];
 		newProject.issues = [];
+
 		await connection.manager.save(newProject);
 
 		return newProject;

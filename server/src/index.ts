@@ -6,6 +6,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { UserResolver } from './resolvers/user';
 import { IssueResolver } from './resolvers/issue';
+import { CommentResolver } from './resolvers/comment';
 import { ProjectResolver } from './resolvers/project';
 import session from 'express-session';
 import Redis from 'ioredis';
@@ -52,7 +53,12 @@ async function main() {
 	// GraphQL
 	const apolloServer = new ApolloServer({
 		schema: await buildSchema({
-			resolvers: [UserResolver, IssueResolver, ProjectResolver],
+			resolvers: [
+				UserResolver,
+				IssueResolver,
+				ProjectResolver,
+				CommentResolver,
+			],
 			validate: false,
 		}),
 		context: ({ req, res }) => ({

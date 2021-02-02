@@ -20,6 +20,16 @@ mutation Login($email: String!, $password: String!) {
 						status
 						id
 						createdAt
+						comments {
+							id
+							createdAt
+							postedBy {
+								id
+								name
+							}
+							comment
+						}
+
 						createdBy {
 							email
 							name

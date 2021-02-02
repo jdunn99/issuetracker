@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Box } from '@chakra-ui/react';
+import { Flex, Box, Icon } from '@chakra-ui/react';
 interface HeaderProps {
 	image?: string;
 }
@@ -10,12 +10,12 @@ export const Header: React.FC<HeaderProps> = ({ children, image = '' }) => {
 			align="center"
 			flexDir={['column', 'column', 'column', 'row']}
 			textAlign={['center', 'center', 'center', 'left']}
+			p={4}
 		>
 			{children}
 			<Box>
 				<svg
-					width="486"
-					height="484"
+					className="hero-image"
 					viewBox="0 0 486 484"
 					fill="none"
 					xmlns="http://www.w3.org/2000/svg"

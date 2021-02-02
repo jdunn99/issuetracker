@@ -7,6 +7,11 @@ body {
 	height: 100%;
 }
 
+.hero-image {
+	width: 486px;
+	height: 484px;
+}
+
 .right-col {
 	padding-top: 3rem;
 	position: relative;
@@ -37,6 +42,12 @@ body {
 	position: fixed;
 	top: 0;
 	width: 100%;
+}
+
+@media only screen and (max-width: 1168px) {
+	.hero-image {
+		width: 340px;
+	}
 }
 
 @keyframes profileAnim {

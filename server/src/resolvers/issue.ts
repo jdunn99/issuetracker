@@ -15,6 +15,8 @@ export class IssueResolver {
 				leftJoinAndSelect: {
 					project: 'issue.project',
 					createdBy: 'issue.createdBy',
+					comments: 'issue.comments',
+					postedBy: 'comments.postedBy',
 				},
 			},
 		});
@@ -70,6 +72,7 @@ export class IssueResolver {
 		newIssue.desc = desc;
 		newIssue.severity = severity;
 		newIssue.status = Status.TODO;
+		newIssue.comments = [];
 		newIssue.createdBy = user;
 		await connection.manager.save(newIssue);
 

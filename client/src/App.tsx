@@ -52,11 +52,17 @@ function Home() {
 										]}
 										px={4}
 									>
-										<Text fontFamily="Poppins">
+										<Text
+											fontFamily="Poppins"
+											color="gray.600"
+										>
 											Eliminate bugs from your code base.
 											Develop solutions faster.
 										</Text>
-										<Text fontFamily="Poppins">
+										<Text
+											fontFamily="Poppins"
+											color="gray.600"
+										>
 											Ensure a great user experience.
 										</Text>
 									</Box>
@@ -95,7 +101,7 @@ function Home() {
 								The tool your team needs to tackle your issues.
 							</Heading>
 							<Box m="auto" maxW={600}>
-								<Text fontFamily="Poppins">
+								<Text color="gray.600" fontFamily="Poppins">
 									Lorem ipsum dolor sit amet consectetur
 									adipisicing elit. Ea fugit praesentium,
 									alias doloremque qui minima vero asperiores.
@@ -120,23 +126,24 @@ const Features = () => {
 		<Box flex={1} m="auto" fontFamily="Poppins">
 			<Box w="100%" mb={6}>
 				<Flex
-					flexDirection={['column', 'column', 'row', 'row']}
+					flexDirection={['column', 'column', 'column', 'row']}
 					mb="4rem"
 					mx="auto"
 					maxW={1200}
 					p={4}
+					pt="6rem"
 				>
 					<Flex
 						flexDir="column"
 						justifyContent="center"
-						w={['100%', '100%', '43%', '43%']}
+						w={['100%', '100%', '100%', '55%']}
 					>
 						<Heading
 							fontFamily="Poppins"
 							size="lg"
 							lineHeight={1.5}
 							mb={5}
-							textAlign={['center', 'center', 'left', 'left']}
+							textAlign={['center', 'center', 'center', 'left']}
 						>
 							Quickly diagnose bugs.
 						</Heading>
@@ -144,7 +151,8 @@ const Features = () => {
 							mt={2}
 							mr={4}
 							mb={10}
-							textAlign={['center', 'center', 'left', 'left']}
+							color="gray.600"
+							textAlign={['center', 'center', 'center', 'left']}
 						>
 							Lorem ipsum dolor sit amet, consectetur adipiscing
 							elit, sed do eiusmod tempor incididunt ut labore et
@@ -158,12 +166,13 @@ const Features = () => {
 						justifyContent={[
 							'center',
 							'center',
-							'flex-end',
+							'center',
 							'flex-end',
 						]}
 					>
 						<Image
-							width={['100%', '100%', '80%', '80%']}
+							width={['100%', '100%', '75%', '90%']}
+							src="https://res.cloudinary.com/de0iugw9w/image/upload/v1610472261/issue-tracker/1_kcv20h.png"
 							alt="placeholder"
 						/>
 					</Flex>
@@ -175,7 +184,7 @@ const Features = () => {
 					flexDirection={[
 						'column-reverse',
 						'column-reverse',
-						'row',
+						'column-reverse',
 						'row',
 					]}
 					mb="4rem"
@@ -189,35 +198,37 @@ const Features = () => {
 						justifyContent={[
 							'center',
 							'center',
-							'flex-start',
+							'center',
 							'flex-start',
 						]}
 					>
 						<Image
-							width={['100%', '100%', '80%', '80%']}
+							width={['100%', '100%', '75%', '90%']}
+							src="https://res.cloudinary.com/de0iugw9w/image/upload/v1610472339/issue-tracker/2_kfeblg.png"
 							alt="placeholder"
 						/>
 					</Flex>
 					<Flex
 						flexDir="column"
 						justifyContent="center"
-						w={['100%', '100%', '43%', '43%']}
+						w={['100%', '100%', '100%', '55%']}
 					>
 						<Heading
 							fontFamily="Poppins"
 							size="lg"
 							lineHeight={1.5}
 							mb={5}
-							textAlign={['center', 'center', 'left', 'left']}
+							textAlign={['center', 'center', 'center', 'left']}
 						>
 							Improve your workflow.
 						</Heading>
 						<Text
 							mt={2}
+							color="gray.600"
 							mr={4}
 							fontSize="16px"
 							mb={10}
-							textAlign={['center', 'center', 'left', 'left']}
+							textAlign={['center', 'center', 'center', 'left']}
 						>
 							Lorem ipsum dolor sit amet, consectetur adipiscing
 							elit, sed do eiusmod tempor incididunt ut labore et
@@ -229,7 +240,7 @@ const Features = () => {
 			</Box>
 			<Box w="100%">
 				<Flex
-					flexDirection={['column', 'column', 'row', 'row']}
+					flexDirection={['column', 'column', 'column', 'row']}
 					mb="4rem"
 					mx="auto"
 					maxW={1200}
@@ -239,14 +250,14 @@ const Features = () => {
 					<Flex
 						flexDir="column"
 						justifyContent="center"
-						w={['100%', '100%', '43%', '43%']}
+						w={['100%', '100%', '100%', '55%']}
 					>
 						<Heading
 							fontFamily="Poppins"
 							size="lg"
 							lineHeight={1.5}
 							mb={5}
-							textAlign={['center', 'center', 'left', 'left']}
+							textAlign={['center', 'center', 'center', 'left']}
 						>
 							Solve your problems.
 						</Heading>
@@ -254,7 +265,8 @@ const Features = () => {
 							mt={2}
 							mr={4}
 							mb={10}
-							textAlign={['center', 'center', 'left', 'left']}
+							color="gray.600"
+							textAlign={['center', 'center', 'center', 'left']}
 						>
 							Lorem ipsum dolor sit amet, consectetur adipiscing
 							elit, sed do eiusmod tempor incididunt ut labore et
@@ -268,13 +280,14 @@ const Features = () => {
 						justifyContent={[
 							'center',
 							'center',
-							'flex-end',
+							'center',
 							'flex-end',
 						]}
 					>
 						<Image
-							width={['100%', '100%', '80%', '80%']}
+							width={['100%', '100%', '75%', '90%']}
 							alt="placeholder"
+							src="https://res.cloudinary.com/de0iugw9w/image/upload/v1610472339/issue-tracker/3_qru0tu.png"
 						/>
 					</Flex>
 				</Flex>
@@ -299,7 +312,7 @@ const Choose = () => {
 					<Heading
 						mt="2rem"
 						size="md"
-						textAlign={['center', 'center', 'left', 'left']}
+						textAlign={['center', 'center', 'center', 'left']}
 						fontFamily="Poppins"
 						color="#7209B7"
 					>
@@ -307,9 +320,9 @@ const Choose = () => {
 					</Heading>
 					<Text
 						mt={2}
-						color="gray.500"
+						color="gray.600"
 						mr={4}
-						textAlign={['center', 'center', 'left', 'left']}
+						textAlign={['center', 'center', 'center', 'left']}
 					>
 						Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 						sed do eiusmod tempor incididunt ut labore et dolore
@@ -322,17 +335,17 @@ const Choose = () => {
 						mt="2rem"
 						color="#7209B7"
 						size="md"
-						textAlign={['center', 'center', 'left', 'left']}
+						textAlign={['center', 'center', 'center', 'left']}
 						fontFamily="Poppins"
 					>
 						It's Easy to Use
 					</Heading>
 					<Text
 						mt={2}
-						color="gray.500"
+						color="gray.600"
 						mr={4}
 						fontFamily="Poppins"
-						textAlign={['center', 'center', 'left', 'left']}
+						textAlign={['center', 'center', 'center', 'left']}
 					>
 						Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 						sed do eiusmod tempor incididunt ut labore et dolore
@@ -345,17 +358,17 @@ const Choose = () => {
 						mt="2rem"
 						color="#7209B7"
 						size="md"
-						textAlign={['center', 'center', 'left', 'left']}
+						textAlign={['center', 'center', 'center', 'left']}
 						fontFamily="Poppins"
 					>
 						It's Secure
 					</Heading>
 					<Text
 						mt={2}
-						color="gray.500"
+						color="gray.600"
 						mr={4}
 						fontFamily="Poppins"
-						textAlign={['center', 'center', 'left', 'left']}
+						textAlign={['center', 'center', 'center', 'left']}
 					>
 						Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 						sed do eiusmod tempor incididunt ut labore et dolore

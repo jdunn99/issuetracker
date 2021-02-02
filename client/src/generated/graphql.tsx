@@ -18,6 +18,7 @@ export type Query = {
   user?: Maybe<User>;
   users: Array<User>;
   issues: Array<Issue>;
+  comments: Array<Comment>;
   projects: Array<Project>;
   project?: Maybe<Project>;
 };
@@ -37,6 +38,7 @@ export type User = {
   createdAt: Scalars['DateTime'];
   issues?: Maybe<Array<Issue>>;
   projects: Array<ProjectRole>;
+  comments: Array<Comment>;
 };
 
 /** The user's role */
@@ -57,6 +59,7 @@ export type Issue = {
   status: Status;
   project: Project;
   createdBy: User;
+  comments: Array<Comment>;
 };
 
 /** The issue's severity */
@@ -93,6 +96,15 @@ export type ProjectRole = {
   role: Role;
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  id: Scalars['Int'];
+  comment: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  postedBy: User;
+  issue: Issue;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   register: UserResponse;
@@ -101,6 +113,7 @@ export type Mutation = {
   deleteUsers: Scalars['Boolean'];
   createIssue?: Maybe<Issue>;
   deleteIssues: Scalars['Boolean'];
+  createComment?: Maybe<Comment>;
   createProject: Project;
   deleteProjects: Scalars['Boolean'];
 };
@@ -135,6 +148,12 @@ export type MutationCreateIssueArgs = {
 };
 
 
+export type MutationCreateCommentArgs = {
+  issueId: Scalars['Float'];
+  content: Scalars['String'];
+};
+
+
 export type MutationCreateProjectArgs = {
   desc: Scalars['String'];
   name: Scalars['String'];
@@ -152,6 +171,24 @@ export type Error = {
   message: Scalars['String'];
 };
 
+export type CreateCommentMutationVariables = Exact<{
+  content: Scalars['String'];
+  issueId: Scalars['Float'];
+}>;
+
+
+export type CreateCommentMutation = (
+  { __typename?: 'Mutation' }
+  & { createComment?: Maybe<(
+    { __typename?: 'Comment' }
+    & Pick<Comment, 'id' | 'createdAt' | 'comment'>
+    & { postedBy: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'name'>
+    ) }
+  )> }
+);
+
 export type CreateIssueMutationVariables = Exact<{
   name: Scalars['String'];
   desc: Scalars['String'];
@@ -168,7 +205,14 @@ export type CreateIssueMutation = (
     & { createdBy: (
       { __typename?: 'User' }
       & Pick<User, 'email' | 'name' | 'id'>
-    ) }
+    ), comments: Array<(
+      { __typename?: 'Comment' }
+      & Pick<Comment, 'id' | 'createdAt' | 'comment'>
+      & { postedBy: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'name'>
+      ) }
+    )> }
   )> }
 );
 
@@ -196,7 +240,14 @@ export type CreateProjectMutation = (
       & { createdBy: (
         { __typename?: 'User' }
         & Pick<User, 'email' | 'name' | 'id'>
-      ) }
+      ), comments: Array<(
+        { __typename?: 'Comment' }
+        & Pick<Comment, 'id' | 'createdAt' | 'comment'>
+        & { postedBy: (
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'name'>
+        ) }
+      )> }
     )> }
   ) }
 );
@@ -225,7 +276,14 @@ export type LoginMutation = (
           & { issues: Array<(
             { __typename?: 'Issue' }
             & Pick<Issue, 'name' | 'desc' | 'severity' | 'status' | 'id' | 'createdAt'>
-            & { createdBy: (
+            & { comments: Array<(
+              { __typename?: 'Comment' }
+              & Pick<Comment, 'id' | 'createdAt' | 'comment'>
+              & { postedBy: (
+                { __typename?: 'User' }
+                & Pick<User, 'id' | 'name'>
+              ) }
+            )>, createdBy: (
               { __typename?: 'User' }
               & Pick<User, 'email' | 'name' | 'id'>
             ) }
@@ -256,7 +314,14 @@ export type ProjectQuery = (
     )>, issues: Array<(
       { __typename?: 'Issue' }
       & Pick<Issue, 'name' | 'desc' | 'severity' | 'status' | 'id' | 'createdAt'>
-      & { createdBy: (
+      & { comments: Array<(
+        { __typename?: 'Comment' }
+        & Pick<Comment, 'id' | 'createdAt' | 'comment'>
+        & { postedBy: (
+          { __typename?: 'User' }
+          & Pick<User, 'id' | 'name'>
+        ) }
+      )>, createdBy: (
         { __typename?: 'User' }
         & Pick<User, 'email' | 'name' | 'id'>
       ) }
@@ -280,7 +345,14 @@ export type UserQuery = (
         & { issues: Array<(
           { __typename?: 'Issue' }
           & Pick<Issue, 'name' | 'desc' | 'severity' | 'status' | 'id' | 'createdAt'>
-          & { createdBy: (
+          & { comments: Array<(
+            { __typename?: 'Comment' }
+            & Pick<Comment, 'id' | 'createdAt' | 'comment'>
+            & { postedBy: (
+              { __typename?: 'User' }
+              & Pick<User, 'id' | 'name'>
+            ) }
+          )>, createdBy: (
             { __typename?: 'User' }
             & Pick<User, 'email' | 'name' | 'id'>
           ) }
@@ -291,6 +363,45 @@ export type UserQuery = (
 );
 
 
+export const CreateCommentDocument = gql`
+    mutation CreateComment($content: String!, $issueId: Float!) {
+  createComment(content: $content, issueId: $issueId) {
+    id
+    createdAt
+    postedBy {
+      id
+      name
+    }
+    comment
+  }
+}
+    `;
+export type CreateCommentMutationFn = Apollo.MutationFunction<CreateCommentMutation, CreateCommentMutationVariables>;
+
+/**
+ * __useCreateCommentMutation__
+ *
+ * To run a mutation, you first call `useCreateCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCommentMutation, { data, loading, error }] = useCreateCommentMutation({
+ *   variables: {
+ *      content: // value for 'content'
+ *      issueId: // value for 'issueId'
+ *   },
+ * });
+ */
+export function useCreateCommentMutation(baseOptions?: Apollo.MutationHookOptions<CreateCommentMutation, CreateCommentMutationVariables>) {
+        return Apollo.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument, baseOptions);
+      }
+export type CreateCommentMutationHookResult = ReturnType<typeof useCreateCommentMutation>;
+export type CreateCommentMutationResult = Apollo.MutationResult<CreateCommentMutation>;
+export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
 export const CreateIssueDocument = gql`
     mutation CreateIssue($name: String!, $desc: String!, $severity: Float!, $projectId: Float!) {
   createIssue(
@@ -309,6 +420,15 @@ export const CreateIssueDocument = gql`
       email
       name
       id
+    }
+    comments {
+      id
+      createdAt
+      postedBy {
+        id
+        name
+      }
+      comment
     }
   }
 }
@@ -368,6 +488,15 @@ export const CreateProjectDocument = gql`
         name
         id
       }
+      comments {
+        id
+        createdAt
+        postedBy {
+          id
+          name
+        }
+        comment
+      }
     }
   }
 }
@@ -421,6 +550,15 @@ export const LoginDocument = gql`
             status
             id
             createdAt
+            comments {
+              id
+              createdAt
+              postedBy {
+                id
+                name
+              }
+              comment
+            }
             createdBy {
               email
               name
@@ -481,6 +619,15 @@ export const ProjectDocument = gql`
       status
       id
       createdAt
+      comments {
+        id
+        createdAt
+        postedBy {
+          id
+          name
+        }
+        comment
+      }
       createdBy {
         email
         name
@@ -533,6 +680,15 @@ export const UserDocument = gql`
           severity
           status
           id
+          comments {
+            id
+            createdAt
+            postedBy {
+              id
+              name
+            }
+            comment
+          }
           createdAt
           createdBy {
             email

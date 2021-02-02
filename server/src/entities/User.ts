@@ -10,6 +10,7 @@ import { Field, ObjectType, Int, registerEnumType } from 'type-graphql';
 import { Role } from '../types';
 import { Issue } from './Issue';
 import { ProjectRole } from './ProjectRole';
+import { Comment } from './Comment';
 
 registerEnumType(Role, {
 	name: 'Role',
@@ -61,4 +62,10 @@ export class User extends BaseEntity {
 	})
 	@Field(() => [ProjectRole])
 	projects: ProjectRole[];
+
+	@OneToMany(() => Comment, (comment) => comment.postedBy, {
+		cascade: true,
+	})
+	@Field(() => [Comment])
+	comments: Comment[];
 }

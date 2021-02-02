@@ -24,6 +24,15 @@ mutation CreateProject($name: String!, $desc: String!) {
 				name
 				id
 			}
+			comments {
+				id
+				createdAt
+				postedBy {
+					id
+					name
+				}
+				comment
+			}
 		}
 	}
 }
