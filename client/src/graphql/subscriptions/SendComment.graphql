@@ -1,0 +1,11 @@
+subscription SendComment {
+	sendComment {
+		id
+		createdAt
+		postedBy {
+			id
+			name
+		}
+		comment
+	}
+}

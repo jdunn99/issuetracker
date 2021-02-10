@@ -1,5 +1,18 @@
-import { Box, Flex, Text, Heading, Table, Avatar } from '@chakra-ui/react';
+import {
+	Box,
+	Flex,
+	Text,
+	Heading,
+	Table,
+	Avatar,
+	Button,
+} from '@chakra-ui/react';
 import React from 'react';
+import {
+	ProjectDocument,
+	ProjectQuery,
+	useRemoveUserFromProjectMutation,
+} from '../../generated/graphql';
 import { ProjectProps } from '../../util/types';
 import { Search } from '../Search';
 import {
@@ -9,9 +22,15 @@ import {
 	TableBody,
 	TableCell,
 } from '../Table';
+import { UserInsert } from './users/UserInsert';
 
-export const Users: React.FC<ProjectProps> = ({ data }) => {
-	const [active, setActive] = React.useState<boolean>(false);
+type UserProps = ProjectProps & {
+	admin: boolean;
+};
+
+export const Users: React.FC<UserProps> = ({ data, admin }) => {
+	const [removeUserFromProject] = useRemoveUserFromProjectMutation();
+
 	return (
 		<Box mx="auto" w="90%">
 			<Box
@@ -27,31 +46,7 @@ export const Users: React.FC<ProjectProps> = ({ data }) => {
 						</Heading>
 						<Search projectData={data} />
 
-						<Box
-							ml={6}
-							textAlign="center"
-							pt="6.5px"
-							background="#7209B7"
-							borderRadius="50%"
-							color="#F8F9FA"
-							width="35px"
-							onMouseEnter={() => setActive(true)}
-							onMouseLeave={() => setActive(false)}
-							cursor="pointer"
-							_hover={{
-								background: '#4D1175',
-							}}
-							height="35px"
-						>
-							+
-						</Box>
-						<Box
-							display={active ? 'block' : 'none'}
-							className="fadeIn"
-							mx={3}
-						>
-							<p>Add a new user</p>
-						</Box>
+						<UserInsert admin={admin} data={data} />
 					</Flex>
 				</Flex>
 				<Box m="auto" mt="3rem" boxShadow="md">
@@ -61,6 +56,7 @@ export const Users: React.FC<ProjectProps> = ({ data }) => {
 								<TableHeader>Name</TableHeader>
 								<TableHeader>Email</TableHeader>
 								<TableHeader>Role</TableHeader>
+								<TableHeader></TableHeader>
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -82,13 +78,60 @@ export const Users: React.FC<ProjectProps> = ({ data }) => {
 									</TableCell>
 									<TableCell>
 										<Text fontSize="sm">
-											{user.user.id}
+											{user.user.email}
 										</Text>
 									</TableCell>
 									<TableCell>
 										<Text fontSize="sm">
 											{user.role.toString()}
 										</Text>
+									</TableCell>
+									<TableCell>
+										{admin ? (
+											<Button
+												onClick={async () => {
+													await removeUserFromProject(
+														{
+															variables: {
+																id: user.id,
+															},
+															update: (
+																cache,
+																{
+																	data: removedUserData,
+																}
+															) => {
+																cache.writeQuery<ProjectQuery>(
+																	{
+																		query: ProjectDocument,
+																		data: {
+																			__typename:
+																				'Query',
+																			project: {
+																				...data!
+																					.project!,
+																				users: data!.project!.users.filter(
+																					(
+																						role
+																					) => {
+																						return (
+																							role.id !==
+																							user.id
+																						);
+																					}
+																				),
+																			},
+																		},
+																	}
+																);
+															},
+														}
+													);
+												}}
+											>
+												x
+											</Button>
+										) : null}
 									</TableCell>
 								</TableRow>
 							))}

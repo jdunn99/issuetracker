@@ -72,7 +72,7 @@ export const Create: React.FC = () => {
 						});
 						if (result.data)
 							history.push(
-								`/project/${result.data.createProject.id}`
+								`/project/${result.data.createProject.id}/`
 							);
 					}}
 				>

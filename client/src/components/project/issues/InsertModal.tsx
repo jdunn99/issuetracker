@@ -13,7 +13,6 @@ import { Formik, Form } from 'formik';
 import React from 'react';
 import {
 	ProjectQuery,
-	ProjectDocument,
 	Exact,
 	useCreateIssueMutation,
 } from '../../../generated/graphql';
@@ -67,25 +66,9 @@ export const InsertModal: React.FC<InsertModalProps> = ({
 										severity: parseFloat(values.severity),
 										projectId: data.project!.id,
 									},
-									update: (cache, { data: test }) => {
-										cache.writeQuery<ProjectQuery>({
-											query: ProjectDocument,
-											data: {
-												__typename: 'Query',
-												project: {
-													...data.project!,
-													issues: [
-														...data.project!.issues,
-														test!.createIssue!,
-													],
-												},
-											},
-										});
-									},
 								});
 
 								if (response) {
-									refetch();
 									setClose();
 								}
 							}}

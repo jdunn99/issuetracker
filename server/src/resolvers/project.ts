@@ -72,6 +72,64 @@ export class ProjectResolver {
 		return newProject;
 	}
 
+	@Mutation(() => ProjectRole)
+	async addUserToProject(
+		@Arg('id') id: number,
+		@Arg('email') email: string,
+		@Ctx() { req }: Context
+	): Promise<ProjectRole> {
+		const user = await getRepository(User).findOne({
+			id: req.session.userId,
+		});
+		if (!user) throw Error();
+
+		const addedUser = await getRepository(User).findOne({
+			email: email,
+		});
+		if (!addedUser) throw Error();
+
+		const project = await getRepository(Project).findOne({
+			where: { id: id },
+			join: {
+				alias: 'project',
+				leftJoinAndSelect: {
+					users: 'project.users',
+					user: 'users.user',
+					issues: 'project.issues',
+					createdBy: 'issues.createdBy',
+					comments: 'issues.comments',
+					postedBy: 'comments.postedBy',
+				},
+			},
+		});
+
+		if (!project) throw Error();
+
+		for (let role of project.users) {
+			if (role.user.id === addedUser.id) throw Error();
+		}
+
+		const connection = getConnection();
+		const projectRole = new ProjectRole();
+		projectRole.user = addedUser;
+		projectRole.role = Role.VIEWER;
+		projectRole.project = project;
+
+		await connection.manager.save(projectRole);
+
+		project.users.push(projectRole);
+
+		await connection.manager.save(project);
+		return projectRole;
+	}
+
+	@Mutation(() => Boolean)
+	async removeUserFromProject(@Arg('id') id: number): Promise<Boolean> {
+		// to remove a user from project we delete the ProjectRole
+		await getRepository(ProjectRole).delete({ id: id });
+		return true;
+	}
+
 	@Mutation(() => Boolean)
 	async deleteProjects(): Promise<Boolean> {
 		await getRepository(ProjectRole).delete({});

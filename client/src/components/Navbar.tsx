@@ -3,6 +3,8 @@ import { Box, Flex, Heading, Text, Button, Avatar } from '@chakra-ui/react';
 import '../App.css';
 import { Link } from 'react-router-dom';
 import { useUserQuery } from '../generated/graphql';
+import { ProfilePopover } from './profile/ProfilePopover';
+
 interface NavbarProps {
 	overview?: boolean;
 }
@@ -24,6 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({ overview = false }) => {
 
 const NavbarStandard: React.FC = () => {
 	const { data, loading } = useUserQuery();
+	console.log(data);
 
 	return (
 		<Flex mx="auto" w={1200} align="center" jusitfy="space-between">
@@ -44,9 +47,7 @@ const NavbarStandard: React.FC = () => {
 								</Text>
 							</Link>
 
-							<Link to="/profile">
-								<Avatar size="sm" />
-							</Link>
+							<ProfilePopover />
 						</>
 					) : (
 						<>
@@ -87,7 +88,7 @@ const NavbarStandard: React.FC = () => {
 
 const NavbarOverview: React.FC = () => {
 	return (
-		<Flex mx="auto" align="center" jusitfy="space-between" w="90%">
+		<Flex mx="auto" align="center" justify="space-between" w="90%">
 			<Box>
 				<Link to="/">
 					<Heading fontFamily="Poppins" fontSize={20}>
@@ -101,7 +102,7 @@ const NavbarOverview: React.FC = () => {
 						Notifications
 					</Text>
 
-					<Avatar size="sm" />
+					<ProfilePopover />
 				</Flex>
 			</Box>
 		</Flex>

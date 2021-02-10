@@ -38,10 +38,20 @@ body {
 }
 
 .navbar {
-	overflow: hidden;
 	position: fixed;
 	top: 0;
 	width: 100%;
+}
+
+.editable-content-title {
+	background: transparent;
+	font-family: Poppins;
+	color: '#1A202C';
+	display: block;
+	font-size: 1.65rem;
+	font-weight: bolder;
+	width: 100%;
+	padding-left: 0.5rem;
 }
 
 @media only screen and (max-width: 1168px) {
@@ -79,6 +89,33 @@ body {
 	}
 }
 
+@keyframes fadeOutAnim {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+@keyframes openAnim {
+	0% {
+		padding: 0rem 1rem;
+	}
+	100% {
+		padding: 0rem 7rem;
+	}
+}
+
+@keyframes close {
+	0% {
+		padding: 0rem 7rem;
+	}
+	100% {
+		padding: 0rem 1rem;
+	}
+}
+
 .hero {
 	animation: heroAnimation 1s forwards 0s ease;
 }
@@ -89,4 +126,16 @@ body {
 
 .fadeIn {
 	animation: fadeInAnim 0.5s forwards 0s linear;
+}
+
+.fadeOut {
+	animation: fadeOutAnim 0.5s forwards 0s linear;
+}
+
+.open {
+	animation: openAnim 0.5s forwards 0s linear;
+}
+
+.close {
+	animation: close 0.5s forwards 0s linear;
 }

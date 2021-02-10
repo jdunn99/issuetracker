@@ -10,25 +10,7 @@ mutation CreateIssue(
 		severity: $severity
 		projectId: $projectId
 	) {
-		name
-		desc
-		severity
-		status
-		id
-		createdAt
-		createdBy {
-			email
-			name
-			id
-		}
-		comments {
-			id
-			createdAt
-			postedBy {
-				id
-				name
-			}
-			comment
-		}
+		field
+		message
 	}
 }

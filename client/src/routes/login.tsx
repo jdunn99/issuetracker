@@ -2,19 +2,20 @@ import React from 'react';
 import { Box, Flex, Button, Heading, Stack, Text } from '@chakra-ui/react';
 import { InputField } from '../components/InputField';
 import { Formik, Form, Field } from 'formik';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {
 	useUserQuery,
 	useLoginMutation,
 	UserDocument,
 	UserQuery,
 } from '../generated/graphql';
+import { MapError } from '../util/MapError';
 
 interface loginProps {}
 
 export const Login: React.FC<loginProps> = () => {
 	const [login] = useLoginMutation();
-	const { data, loading } = useUserQuery();
+	const history = useHistory();
 
 	return (
 		<Flex
@@ -46,9 +47,9 @@ export const Login: React.FC<loginProps> = () => {
 							},
 						});
 						if (response.data?.login.errors) {
-							console.log('NOT!');
+							setErrors(MapError(response.data.login.errors));
 						} else {
-							console.log('great success!');
+							history.push('/');
 						}
 					}}
 				>
@@ -97,7 +98,7 @@ export const Login: React.FC<loginProps> = () => {
 					<p>or</p>
 				</Box>
 				<Stack w="100%" spacing={4}>
-					<Button
+					{/* <Button
 						w="100%"
 						background="#393939"
 						type="submit"
@@ -136,7 +137,7 @@ export const Login: React.FC<loginProps> = () => {
 						color="#F8F9FA"
 					>
 						Sign In with Twitter
-					</Button>
+					</Button> */}
 					<Flex w="100%" justify="flex-end">
 						<Text fontFamily="Poppins" mx={1}>
 							Don't have an account?
@@ -151,7 +152,6 @@ export const Login: React.FC<loginProps> = () => {
 							</Text>
 						</Link>
 					</Flex>
-					{data && data.user ? <p>{data.user.id}</p> : null}
 				</Stack>
 			</Box>
 		</Flex>

@@ -1,11 +1,6 @@
 mutation CreateComment($content: String!, $issueId: Float!) {
 	createComment(content: $content, issueId: $issueId) {
-		id
-		createdAt
-		postedBy {
-			id
-			name
-		}
-		comment
+		field
+		message
 	}
 }

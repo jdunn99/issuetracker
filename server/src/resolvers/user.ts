@@ -6,22 +6,17 @@ import {
 	ObjectType,
 	Field,
 	Ctx,
+	// Subscription,
+	// Root,
 } from 'type-graphql';
 import { getRepository } from 'typeorm';
 import { User } from '../entities/User';
+import { Error } from '../entities/Error';
 import bcrypt from 'bcrypt';
 import { Context, Role } from '../types';
+import { Notification } from '../entities/Notification';
 
 const SALT_FACTOR = 10;
-
-@ObjectType()
-class Error {
-	@Field()
-	field: string;
-
-	@Field()
-	message: string;
-}
 
 @ObjectType()
 class UserResponse {
@@ -36,6 +31,7 @@ class UserResponse {
 export class UserResolver {
 	@Query(() => User, { nullable: true })
 	async user(@Ctx() { req }: Context): Promise<User | null> {
+		console.log(req.session.userId);
 		if (!req.session.userId) return null;
 
 		return (await getRepository(User).findOne({
@@ -45,9 +41,10 @@ export class UserResolver {
 				leftJoinAndSelect: {
 					projects: 'user.projects',
 					project: 'projects.project',
+					notifications: 'user.notifications',
 					issues: 'project.issues',
 					createdBy: 'issues.createdBy',
-					comments: 'user.comments',
+					comments: 'issues.comments',
 					postedBy: 'comments.postedBy',
 				},
 			},
@@ -66,6 +63,7 @@ export class UserResolver {
 				alias: 'user',
 				leftJoinAndSelect: {
 					projects: 'user.projects',
+					notifications: 'user.notifications',
 					project: 'projects.project',
 					issues: 'project.issues',
 					createdBy: 'issues.createdBy',
@@ -129,6 +127,7 @@ export class UserResolver {
 		newUser.projects = [];
 		newUser.issues = [];
 		newUser.comments = [];
+		newUser.notifications = [];
 
 		await getRepository(User).save(newUser);
 
@@ -224,6 +223,7 @@ export class UserResolver {
 
 	@Mutation(() => Boolean)
 	async deleteUsers(): Promise<boolean> {
+		await getRepository(Notification).delete({});
 		await getRepository(User).delete({});
 		return true;
 	}

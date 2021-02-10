@@ -8,8 +8,11 @@ import {
 	TableRow,
 	TableCell,
 } from '../Table';
+import { useHistory } from 'react-router';
 
 export const Issues: React.FC<ProfileProps> = ({ data }) => {
+	const history = useHistory();
+
 	return (
 		<Box mt="5rem" px={5} fontFamily="Poppins" className="profileComponent">
 			<Heading size="lg">Issues Overview</Heading>
@@ -31,7 +34,13 @@ export const Issues: React.FC<ProfileProps> = ({ data }) => {
 										_hover={{
 											background: '#eeeeee',
 										}}
+										key={issue.id}
 										cursor="pointer"
+										onClick={() => {
+											history.push(
+												`/project/${proj.project.id}/${issue.id}`
+											);
+										}}
 									>
 										<TableCell>
 											<Text>{issue.name}</Text>

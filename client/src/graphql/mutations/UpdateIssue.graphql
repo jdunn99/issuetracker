@@ -1,19 +1,15 @@
-query Project($id: Float!) {
-	project(id: $id) {
-		id
-		name
-		desc
-		createdAt
-		users {
-			id
-			role
-			user {
-				email
-				id
-				name
-			}
+mutation UpdateIssue(
+	$id: Float!
+	$name: String
+	$desc: String
+	$status: Float
+) {
+	updateIssue(id: $id, name: $name, desc: $desc, status: $status) {
+		errors {
+			field
+			message
 		}
-		issues {
+		issue {
 			name
 			desc
 			severity

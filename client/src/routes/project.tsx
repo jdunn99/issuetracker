@@ -1,10 +1,9 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { useProjectQuery } from '../generated/graphql';
+import { Role, useProjectQuery, useUserQuery } from '../generated/graphql';
 import { Spinner, Box, Flex, Button, Heading } from '@chakra-ui/react';
 import { Sidebar } from '../components/Sidebar';
 import { Navbar } from '../components/Navbar';
-import { usePersistedState } from '../util/persistState';
 import { Issues } from '../components/project/Issues';
 import { Create } from '../components/project/Create';
 import { Users } from '../components/project/Users';
@@ -26,14 +25,16 @@ const Render: React.FC<RouteProps> = ({ id }) => {
 	const { data, loading, refetch } = useProjectQuery({
 		variables: { id: parseInt(id!) },
 	});
-	const [active, setActive] = usePersistedState('Issues', 'project-active');
+	const [admin, setAdmin] = React.useState<boolean>(false);
+	const { data: dataUser } = useUserQuery();
+	const [active, setActive] = React.useState<string>('Issues');
 
 	function actionHandler() {
 		switch (active) {
 			case 'Issues':
-				return <Issues data={data!} refetch={refetch} />;
+				return <Issues admin={admin} data={data!} refetch={refetch} />;
 			case 'Users':
-				return <Users refetch={refetch} data={data!} />;
+				return <Users refetch={refetch} admin={admin} data={data!} />;
 			case 'Settings':
 				return <Settings refetch={refetch} data={data!} />;
 			default:
@@ -41,8 +42,24 @@ const Render: React.FC<RouteProps> = ({ id }) => {
 		}
 	}
 
+	React.useEffect(() => {
+		if (dataUser)
+			if (dataUser.user) {
+				const temp = data!.project!.users.filter((projectRole) => {
+					return (
+						projectRole.user.id === dataUser!.user!.id &&
+						(projectRole.role === Role.Admin ||
+							projectRole.role === Role.Editor)
+					);
+				});
+				if (temp.length > 0) setAdmin(true);
+			}
+	}, [data, dataUser]);
+
 	return loading && !data ? (
-		<Spinner />
+		<Flex w="100%" h="100vh" align="center" justify="center">
+			<Spinner />
+		</Flex>
 	) : (
 		<Box>
 			<main>

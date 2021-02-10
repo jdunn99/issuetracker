@@ -75,7 +75,7 @@ export const Projects: React.FC<ProfileProps> = ({ data }) => {
 										cursor="pointer"
 										onClick={() =>
 											history.push(
-												`/project/${proj.project.id}`
+												`/project/${proj.project.id}/`
 											)
 										}
 									>

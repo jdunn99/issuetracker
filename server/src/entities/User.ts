@@ -11,6 +11,7 @@ import { Role } from '../types';
 import { Issue } from './Issue';
 import { ProjectRole } from './ProjectRole';
 import { Comment } from './Comment';
+import { Notification } from './Notification';
 
 registerEnumType(Role, {
 	name: 'Role',
@@ -68,4 +69,10 @@ export class User extends BaseEntity {
 	})
 	@Field(() => [Comment])
 	comments: Comment[];
+
+	@OneToMany(() => Notification, (notification) => notification.user, {
+		cascade: true,
+	})
+	@Field(() => [Notification])
+	notifications: Notification[];
 }

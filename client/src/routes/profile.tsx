@@ -4,19 +4,16 @@ import { Navbar } from '../components/Navbar';
 import { Sidebar } from '../components/Sidebar';
 import { useUserQuery } from '../generated/graphql';
 import { usePersistedState } from '../util/persistState';
-import { Dashboard } from '../components/profile/Dashboard';
 import { Projects } from '../components/profile/Projects';
 import { Issues } from '../components/profile/Issues';
 
 export const Profile: React.FC = () => {
-	const [active, setActive] = usePersistedState('Dashboard', 'active');
+	window.localStorage.clear();
+	const [active, setActive] = usePersistedState('Projects', 'active');
 	const { data, loading } = useUserQuery();
 
 	function actionHandler() {
 		switch (active) {
-			case 'Dashboard':
-				return <Dashboard data={data} />;
-
 			case 'Projects':
 				return <Projects data={data} />;
 			case 'Issues':
@@ -30,20 +27,7 @@ export const Profile: React.FC = () => {
 				<Navbar overview />
 				<Flex>
 					<Sidebar background="#7209B7">
-						<Box textAlign="center" px="5rem">
-							<Button
-								bg={
-									active === 'Dashboard'
-										? '#AF0EDE'
-										: 'transparent'
-								}
-								color="white"
-								_hover={{ background: '#AF0EDE' }}
-								onClick={() => setActive('Dashboard')}
-							>
-								Dashboard
-							</Button>
-						</Box>
+						<Box textAlign="center" px="7rem"></Box>
 						<Box textAlign="center" p={1}>
 							<Button
 								bg={

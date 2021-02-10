@@ -48,12 +48,6 @@ export const signup: React.FC<signupProps> = () => {
 									type="password"
 								/>
 							</Box>
-							<Box mt={4} fontFamily="Poppins">
-								<Flex align="center">
-									<Field type="checkbox" name="toggle" />
-									<Text mx={2}>Remember me</Text>
-								</Flex>
-							</Box>
 
 							<Box w="100%" textAlign="center" mt={8}>
 								<Button

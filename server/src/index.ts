@@ -11,13 +11,14 @@ import { ProjectResolver } from './resolvers/project';
 import session from 'express-session';
 import Redis from 'ioredis';
 import connectRedis from 'connect-redis';
+import { createServer } from 'http';
 
 async function main() {
 	const app = express();
 
 	app.set('trust proxy', 1);
 	const corsOptions = {
-		origin: 'http://localhost:3000',
+		origin: 'http://10.0.0.9:3000',
 		credentials: true,
 		'Access-Control-Allow-Credentials': true,
 	};
@@ -50,7 +51,6 @@ async function main() {
 		})
 	);
 
-	// GraphQL
 	const apolloServer = new ApolloServer({
 		schema: await buildSchema({
 			resolvers: [
@@ -61,16 +61,31 @@ async function main() {
 			],
 			validate: false,
 		}),
-		context: ({ req, res }) => ({
-			req,
-			res,
-		}),
+		subscriptions: {
+			onConnect: (connectionParams, _) => {
+				console.log(connectionParams);
+			},
+		},
+		context: async ({ req, res, connection }) => {
+			if (connection) {
+				console.log(req);
+				return connection.context;
+			} else {
+				return {
+					req,
+					res,
+				};
+			}
+		},
 		playground: true,
 	});
 
 	apolloServer.applyMiddleware({ app, cors: false });
 
-	app.listen(4000, () => console.log('Server started'));
+	const websocketServer = createServer(app);
+	apolloServer.installSubscriptionHandlers(websocketServer);
+
+	websocketServer.listen(4000, () => console.log('Server started'));
 }
 
 main().catch((err) => console.log(err));

@@ -8,6 +8,7 @@ mutation CreateProject($name: String!, $desc: String!) {
 			id
 			role
 			user {
+				email
 				id
 				name
 			}
