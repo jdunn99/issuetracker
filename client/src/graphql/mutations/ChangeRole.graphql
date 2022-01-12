@@ -1,0 +1,11 @@
+mutation ChangeRole($id: Float!, $role: Float!) {
+  changeRole(id: $id, role: $role) {
+    errors {
+      field
+      message
+    }
+    response {
+      role
+    }
+  }
+}

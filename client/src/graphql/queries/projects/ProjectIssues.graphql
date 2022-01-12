@@ -1,0 +1,11 @@
+query ProjectIssues($id: Float!) {
+  getIssuesFromProject(id: $id) {
+    errors {
+      field
+      message
+    }
+    response {
+      ...IssueFragment
+    }
+  }
+}

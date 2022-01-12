@@ -1,35 +1,28 @@
 mutation UpdateIssue(
-	$id: Float!
-	$name: String
-	$desc: String
-	$status: Float
+  $id: Float!
+  $name: String
+  $desc: String
+  $status: Float
+  $severity: Float
 ) {
-	updateIssue(id: $id, name: $name, desc: $desc, status: $status) {
-		errors {
-			field
-			message
-		}
-		issue {
-			name
-			desc
-			severity
-			status
-			id
-			createdAt
-			comments {
-				id
-				createdAt
-				postedBy {
-					id
-					name
-				}
-				comment
-			}
-			createdBy {
-				email
-				name
-				id
-			}
-		}
-	}
+  updateIssue(
+    id: $id
+    name: $name
+    desc: $desc
+    status: $status
+    severity: $severity
+  ) {
+    errors {
+      field
+      message
+    }
+    response {
+      id
+      name
+      desc
+      severity
+      status
+      createdAt
+    }
+  }
 }

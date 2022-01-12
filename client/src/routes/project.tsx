@@ -1,137 +1,86 @@
-import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import { Role, useProjectQuery, useUserQuery } from '../generated/graphql';
-import { Spinner, Box, Flex, Button, Heading } from '@chakra-ui/react';
-import { Sidebar } from '../components/Sidebar';
-import { Navbar } from '../components/Navbar';
-import { Issues } from '../components/project/Issues';
-import { Create } from '../components/project/Create';
-import { Users } from '../components/project/Users';
-import { Settings } from '../components/project/Settings';
+import React from "react";
+import { Box, Flex, useToast } from "@chakra-ui/react";
+import { Sidebar } from "../components/Sidebar";
+import {
+  ProjectQuery,
+  useProjectLazyQuery,
+  useUserQuery,
+} from "../generated/graphql";
+import SidebarContext from "../util/SidebarContext";
+import { ProjectIssues } from "../components/projects/ProjectIssues";
+import ProjectContext from "../util/ProjectContext";
+import { useParams } from "react-router";
+import { ProjectSettings } from "../components/projects/ProjectSettings";
+import { ProjectUsers } from "../components/projects/ProjectUsers";
+import { useHistory } from "react-router-dom";
 
-interface RouteProps {
-	id: string | undefined;
-}
+export const Project: React.FC = () => {
+  const { changeActive, active } = React.useContext(SidebarContext);
+  const { project, setProject } = React.useContext(ProjectContext);
+  const { data, loading } = useUserQuery();
+  const [rendered, setRendered] = React.useState<JSX.Element>();
 
-export const Project = ({ match }: RouteComponentProps<RouteProps>) => {
-	return match.params.id === 'create' ? (
-		<Create />
-	) : match.params.id ? (
-		<Render id={match.params.id} />
-	) : null;
-};
+  const history = useHistory();
+  const toast = useToast();
+  const params: { id: string } = useParams();
 
-const Render: React.FC<RouteProps> = ({ id }) => {
-	const { data, loading, refetch } = useProjectQuery({
-		variables: { id: parseInt(id!) },
-	});
-	const [admin, setAdmin] = React.useState<boolean>(false);
-	const { data: dataUser } = useUserQuery();
-	const [active, setActive] = React.useState<string>('Issues');
+  // If we don't have a project already set. Do so.
+  const init = (projectData: ProjectQuery) => {
+    if (!project && projectData && projectData.project.response) {
+      setProject({
+        canEdit: projectData.project.response.canEdit,
+        id: params.id,
+        name: projectData.project.response.project.name,
+      });
+    }
+  };
 
-	function actionHandler() {
-		switch (active) {
-			case 'Issues':
-				return <Issues admin={admin} data={data!} refetch={refetch} />;
-			case 'Users':
-				return <Users refetch={refetch} admin={admin} data={data!} />;
-			case 'Settings':
-				return <Settings refetch={refetch} data={data!} />;
-			default:
-				return null;
-		}
-	}
+  const [fetch, { data: projectData }] = useProjectLazyQuery({
+    onCompleted: init,
+  });
 
-	React.useEffect(() => {
-		if (dataUser)
-			if (dataUser.user) {
-				const temp = data!.project!.users.filter((projectRole) => {
-					return (
-						projectRole.user.id === dataUser!.user!.id &&
-						(projectRole.role === Role.Admin ||
-							projectRole.role === Role.Editor)
-					);
-				});
-				if (temp.length > 0) setAdmin(true);
-			}
-	}, [data, dataUser]);
+  // Check if user is signed in.
+  React.useEffect(() => {
+    if (!loading && data && !data.user) {
+      toast({
+        title: "Error",
+        status: "error",
+        isClosable: true,
+        description: "Not signed in",
+      });
+      history.push("/signin");
+    }
+  }, [data, history, loading, toast]);
 
-	return loading && !data ? (
-		<Flex w="100%" h="100vh" align="center" justify="center">
-			<Spinner />
-		</Flex>
-	) : (
-		<Box>
-			<main>
-				<Navbar overview />
-				<Flex>
-					{/* <Sidebar background="#7209B7">
-						<Box textAlign="center">
-							<Button
-								bg="transparent"
-								color="white"
-								_hover={{ background: '#AF0EDE' }}
-							></Button>
-						</Box>
-						<Box textAlign="center" p={1}>
-							<Button
-								bg="transparent"
-								_hover={{ background: '#AF0EDE' }}
-							></Button>
-						</Box>
-						<Box textAlign="center" p={1}>
-							<Button
-								bg="transparent"
-								_hover={{ background: '#AF0EDE' }}
-							></Button>
-						</Box>
-					</Sidebar> */}
-					<Sidebar background="#EDEDED">
-						<Box textAlign="center" px="5rem">
-							<Button
-								bg={
-									active === 'Issues'
-										? '#DDDDDD'
-										: 'transparent'
-								}
-								_hover={{ background: '#DDDDDD' }}
-								onClick={() => setActive('Issues')}
-							>
-								Issues
-							</Button>
-						</Box>
-						<Box textAlign="center" p={1}>
-							<Button
-								bg={
-									active === 'Users'
-										? '#DDDDDD'
-										: 'transparent'
-								}
-								_hover={{ background: '#DDDDDD' }}
-								onClick={() => setActive('Users')}
-							>
-								Users
-							</Button>
-						</Box>
-						<Box textAlign="center" p={1}>
-							<Button
-								bg={
-									active === 'Settings'
-										? '#DDDDDD'
-										: 'transparent'
-								}
-								_hover={{ background: '#DDDDDD' }}
-								onClick={() => setActive('Settings')}
-							>
-								Settings
-							</Button>
-						</Box>
-					</Sidebar>
-					<Flex flexDir="column" className="right-col">
-						{actionHandler()}
-					</Flex>
-				</Flex>
-			</main>
-		</Box>
-	);
+  React.useEffect(() => {
+    fetch({ variables: { id: parseFloat(params.id) } });
+  }, [params, fetch]);
+
+  // Render active component
+  React.useEffect(() => {
+    if (data)
+      switch (active) {
+        case "Issues":
+          setRendered(<ProjectIssues />);
+          return;
+        case "Users":
+          setRendered(<ProjectUsers />);
+          return;
+        case "Settings":
+          if (projectData) setRendered(<ProjectSettings data={projectData} />);
+          return;
+        default:
+          changeActive("Issues");
+          return;
+      }
+  }, [data, active, projectData, changeActive]);
+
+  return data && data.user ? (
+    <Box maxH="100vh" overflowY="hidden">
+      <Flex>
+        <Sidebar name={data.user.name} email={data.user.email} />
+        {rendered}
+      </Flex>
+    </Box>
+  ) : null;
 };

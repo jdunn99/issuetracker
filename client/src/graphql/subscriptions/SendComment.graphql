@@ -1,11 +1,11 @@
-subscription SendComment {
-	sendComment {
-		id
-		createdAt
-		postedBy {
-			id
-			name
-		}
-		comment
-	}
+subscription SendComment($id: Float!) {
+  sendComment(id: $id) {
+    id
+    createdAt
+    postedBy {
+      id
+      name
+    }
+    comment
+  }
 }

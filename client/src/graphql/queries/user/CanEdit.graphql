@@ -1,0 +1,3 @@
+query CanEdit($id: Float!) {
+  canEdit(id: $id)
+}

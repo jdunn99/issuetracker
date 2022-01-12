@@ -1,0 +1,9 @@
+mutation DeleteProject($id: Float!) {
+  deleteProjectById(id: $id) {
+    errors {
+      field
+      message
+    }
+    response
+  }
+}

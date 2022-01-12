@@ -1,0 +1,10 @@
+mutation DeleteFeedItem($id: Float!, $cursor: String!) {
+  deleteFeedItem(id: $id, cursor: $cursor) {
+    id
+    desc
+    createdAt
+    title
+    subheading
+    type
+  }
+}

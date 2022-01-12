@@ -1,11 +1,18 @@
-mutation AddUserToProject($id: Float!, $email: String!) {
-	addUserToProject(id: $id, email: $email) {
-		id
-		role
-		user {
-			email
-			id
-			name
-		}
-	}
+mutation AddUsers($id: Float!, $users: [Int!]!) {
+  addUsers(id: $id, users: $users) {
+    errors {
+      field
+      message
+    }
+    response {
+      createdAt
+      role
+      id
+      user {
+        id
+        email
+        name
+      }
+    }
+  }
 }

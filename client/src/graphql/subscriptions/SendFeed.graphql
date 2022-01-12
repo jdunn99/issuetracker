@@ -1,0 +1,10 @@
+subscription SendFeed($id: Float!) {
+  sendFeed(id: $id) {
+    id
+    title
+    subheading
+    desc
+    type
+    createdAt
+  }
+}

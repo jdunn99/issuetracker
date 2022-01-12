@@ -1,230 +1,99 @@
+import { Resolver, Query, Mutation, Arg, Ctx, Int } from "type-graphql";
+import { User } from "../entities/User";
+import { Context, Role } from "../types";
 import {
-	Resolver,
-	Query,
-	Mutation,
-	Arg,
-	ObjectType,
-	Field,
-	Ctx,
-	// Subscription,
-	// Root,
-} from 'type-graphql';
-import { getRepository } from 'typeorm';
-import { User } from '../entities/User';
-import { Error } from '../entities/Error';
-import bcrypt from 'bcrypt';
-import { Context, Role } from '../types';
-import { Notification } from '../entities/Notification';
-
-const SALT_FACTOR = 10;
-
-@ObjectType()
-class UserResponse {
-	@Field(() => [Error], { nullable: true })
-	errors?: Error[];
-
-	@Field(() => User, { nullable: true })
-	user?: User;
-}
+  UserResponse,
+  UserOverviewResponse,
+  ProjectManagementResponse,
+  UserProjectResponse,
+} from "./graphql-response/Response";
+import {
+  userQuery,
+  overviewQuery,
+  usersQuery,
+  userProjectsQuery,
+  editQuery,
+} from "./user/queries";
+import {
+  loginMutation,
+  logoutMutation,
+  registerMutation,
+  updateMutation,
+} from "./user/mutations";
 
 @Resolver(() => User)
 export class UserResolver {
-	@Query(() => User, { nullable: true })
-	async user(@Ctx() { req }: Context): Promise<User | null> {
-		console.log(req.session.userId);
-		if (!req.session.userId) return null;
+  /************** QUERIES **************/
 
-		return (await getRepository(User).findOne({
-			where: { id: req.session.userId },
-			join: {
-				alias: 'user',
-				leftJoinAndSelect: {
-					projects: 'user.projects',
-					project: 'projects.project',
-					notifications: 'user.notifications',
-					issues: 'project.issues',
-					createdBy: 'issues.createdBy',
-					comments: 'issues.comments',
-					postedBy: 'comments.postedBy',
-				},
-			},
-		})) as User;
-	}
+  // Used to check if the User is logged in.
+  @Query(() => User, { nullable: true })
+  async user(@Ctx() { req }: Context): Promise<User | null> {
+    return userQuery(req.session.userId);
+  }
 
-	/*
-	 * @desc: Gets all users from the database
-	 * @params:
-	 * @returns: [Users]
-	 */
-	@Query(() => [User])
-	async users(): Promise<User[]> {
-		return await getRepository(User).find({
-			join: {
-				alias: 'user',
-				leftJoinAndSelect: {
-					projects: 'user.projects',
-					notifications: 'user.notifications',
-					project: 'projects.project',
-					issues: 'project.issues',
-					createdBy: 'issues.createdBy',
-					comments: 'issues.comments',
-					postedBy: 'comments.postedBy',
-				},
-			},
-		});
-	}
+  // Return metrics to Client.
+  @Query(() => UserOverviewResponse)
+  async getUserOverview(
+    @Arg("limit", () => Int) limit: number,
+    @Ctx() { req }: Context,
+    @Arg("cursor", { nullable: true }) cursor?: string
+  ): Promise<UserOverviewResponse> {
+    return overviewQuery(limit, req.session.userId, cursor);
+  }
 
-	@Mutation(() => UserResponse)
-	async register(
-		@Arg('email') email: string,
-		@Arg('password') password: string,
-		@Arg('name') name: string,
-		@Arg('role', () => Role) role: Role,
-		@Arg('organization', { nullable: true }) organization?: string
-	): Promise<UserResponse> {
-		// Check if email exists
-		if (await getRepository(User).findOne({ email: email })) {
-			return {
-				errors: [
-					{
-						field: 'email',
-						message: 'Email already exists',
-					},
-				],
-			};
-		}
+  // Used in searching for User(s).
+  @Query(() => [User])
+  async usersByQuery(
+    @Arg("query") query: string,
+    @Arg("limit") limit: number
+  ): Promise<User[]> {
+    return usersQuery(query, limit);
+  }
 
-		console.log(role);
+  @Query(() => UserProjectResponse)
+  async getUserProjects(
+    @Ctx() { req }: Context,
+    @Arg("cursor", { nullable: true }) cursor?: string
+  ): Promise<UserProjectResponse> {
+    return userProjectsQuery(req.session.userId, cursor);
+  }
 
-		// Check the password to see if it is strong enough
-		if (password.length < 6) {
-			return {
-				errors: [
-					{
-						field: 'password',
-						message: 'Password is too short',
-					},
-				],
-			};
-		} else if (password.search(/\d/) === -1) {
-			return {
-				errors: [
-					{
-						field: 'password',
-						message: 'Password must contain at least 1 number',
-					},
-				],
-			};
-		}
+  // Checks to see if the User has permission to edit a project.
+  @Query(() => Role)
+  async canEdit(@Arg("id") id: number, @Ctx() { req }: Context): Promise<Role> {
+    return editQuery(id, req.session.userId);
+  }
 
-		const hashed = bcrypt.hashSync(password, SALT_FACTOR);
-		let newUser = new User();
-		newUser.email = email;
-		newUser.password = hashed;
-		newUser.name = name;
-		if (organization) newUser.organization = organization;
-		newUser.role = role;
-		newUser.projects = [];
-		newUser.issues = [];
-		newUser.comments = [];
-		newUser.notifications = [];
+  /************** MUTATIONS **************/
 
-		await getRepository(User).save(newUser);
+  @Mutation(() => UserResponse)
+  async register(
+    @Arg("email") email: string,
+    @Arg("password") password: string,
+    @Arg("name") name: string
+  ): Promise<UserResponse> {
+    return registerMutation(email, password, name);
+  }
 
-		return {
-			user: newUser,
-		};
-	}
+  @Mutation(() => ProjectManagementResponse)
+  async updateUser(
+    @Arg("projectId") projectId: number,
+    @Arg("role") role: Role
+  ): Promise<ProjectManagementResponse> {
+    return updateMutation(projectId, role);
+  }
 
-	@Mutation(() => UserResponse)
-	async login(
-		@Arg('email') email: string,
-		@Arg('password') password: string,
-		@Ctx() { req }: Context
-	): Promise<UserResponse> {
-		const checkedUser = (await getRepository(User).findOne({
-			where: { email: email },
-			join: {
-				alias: 'user',
-				leftJoinAndSelect: {
-					projects: 'user.projects',
-					project: 'projects.project',
-					issues: 'project.issues',
-					createdBy: 'issues.createdBy',
-					comments: 'issues.comments',
-					postedBy: 'comments.postedBy',
-				},
-			},
-		})) as User;
-		if (!checkedUser)
-			return {
-				errors: [
-					{
-						field: 'email',
-						message: 'Email is invalid',
-					},
-				],
-			};
-		if (!bcrypt.compareSync(password, checkedUser.password)) {
-			return {
-				errors: [
-					{
-						field: 'password',
-						message: 'Password is invalid',
-					},
-				],
-			};
-		}
+  @Mutation(() => UserResponse)
+  async login(
+    @Arg("email") email: string,
+    @Arg("password") password: string,
+    @Ctx() ctx: Context
+  ): Promise<UserResponse> {
+    return loginMutation(email, password, ctx);
+  }
 
-		console.log(checkedUser.id);
-
-		req.session.userId = checkedUser.id;
-
-		return {
-			user: checkedUser,
-		};
-	}
-
-	@Mutation(() => UserResponse)
-	async changePermissions(
-		@Arg('userId') userId: number,
-		@Arg('role', () => Role) role: Role,
-		@Ctx() { req }: Context
-	): Promise<UserResponse> {
-		if (!req.session.userId)
-			return {
-				errors: [
-					{
-						field: '',
-						message: 'Not signed in',
-					},
-				],
-			};
-
-		const toBeChanged = await getRepository(User).findOne({ id: userId });
-
-		if (!toBeChanged)
-			return {
-				errors: [
-					{
-						field: 'user',
-						message: 'User does not exist',
-					},
-				],
-			};
-
-		toBeChanged.role = role;
-		await getRepository(User).save(toBeChanged);
-
-		return {
-			user: toBeChanged,
-		};
-	}
-
-	@Mutation(() => Boolean)
-	async deleteUsers(): Promise<boolean> {
-		await getRepository(Notification).delete({});
-		await getRepository(User).delete({});
-		return true;
-	}
+  @Mutation(() => Boolean)
+  async logout(@Ctx() ctx: Context) {
+    await logoutMutation(ctx);
+  }
 }

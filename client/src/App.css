@@ -1,141 +1,239 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap");
 html,
 body {
-	font-family: 'Poppins', Arial, Helvetica, sans-serif;
-	background-color: #f8f9fa !important;
-	overflow-x: hidden;
-	height: 100%;
+  font-family: "Poppins", Arial, Helvetica, sans-serif;
+  background-color: #f8f9fa !important;
+  overflow-x: hidden;
+  height: 100%;
 }
 
 .hero-image {
-	width: 486px;
-	height: 484px;
+  width: 486px;
+  height: 484px;
 }
 
 .right-col {
-	padding-top: 3rem;
-	position: relative;
-	overflow-y: scroll;
-	height: 100vh;
-	padding-bottom: 3rem;
-	width: 100%;
+  padding-top: 3rem;
+  position: relative;
+  overflow-y: scroll;
+  height: 100vh;
+  padding-bottom: 3rem;
+  width: 100%;
 }
 
 .center-col {
-	padding-top: 3rem;
-	flex: 1;
-	position: relative;
-	height: 100vh;
+  padding-top: 3rem;
+  flex: 1;
+  position: relative;
+  height: 100vh;
 }
 
 .modal-scroll {
-	padding-top: 3rem;
-	position: relative;
-	overflow-y: scroll;
-	height: 80vh;
-	padding-bottom: 3rem;
-	width: 100%;
+  padding-top: 3rem;
+  position: relative;
+  overflow-y: scroll;
+  height: 80vh;
+  padding-bottom: 3rem;
+  width: 100%;
 }
 
 .navbar {
-	position: fixed;
-	top: 0;
-	width: 100%;
+  position: fixed;
+  top: 0;
+  width: 100%;
 }
 
 .editable-content-title {
-	background: transparent;
-	font-family: Poppins;
-	color: '#1A202C';
-	display: block;
-	font-size: 1.65rem;
-	font-weight: bolder;
-	width: 100%;
-	padding-left: 0.5rem;
+  background: transparent;
+  font-family: Poppins;
+  color: "#1A202C";
+  display: block;
+  font-size: 1.65rem;
+  font-weight: bolder;
+  width: 100%;
+  padding-left: 0.5rem;
 }
 
 @media only screen and (max-width: 1168px) {
-	.hero-image {
-		width: 340px;
-	}
+  .hero-image {
+    width: 340px;
+  }
 }
 
 @keyframes profileAnim {
-	0% {
-		transform: translateY(5%);
-		opacity: 0.25;
-	}
-	100% {
-		opacity: 1;
-	}
+  0% {
+    transform: translateY(5%);
+    opacity: 0.25;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes heroAnimation {
-	0% {
-		transform: translateY(-2%);
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
+  0% {
+    transform: translateY(-2%);
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeInAnim {
-	0% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeOutAnim {
-	0% {
-		opacity: 1;
-	}
-	100% {
-		opacity: 0;
-	}
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes openAnim {
-	0% {
-		padding: 0rem 1rem;
-	}
-	100% {
-		padding: 0rem 7rem;
-	}
+  0% {
+    padding: 0rem 1rem;
+  }
+  100% {
+    padding: 0rem 7rem;
+  }
 }
 
 @keyframes close {
-	0% {
-		padding: 0rem 7rem;
-	}
-	100% {
-		padding: 0rem 1rem;
-	}
+  0% {
+    padding: 0rem 7rem;
+  }
+  100% {
+    padding: 0rem 1rem;
+  }
 }
 
 .hero {
-	animation: heroAnimation 1s forwards 0s ease;
+  animation: heroAnimation 1s forwards 0s ease;
 }
 
 .profileComponent {
-	animation: profileAnim 1s forwards 0s ease;
+  animation: profileAnim 1s forwards 0s ease;
 }
 
 .fadeIn {
-	animation: fadeInAnim 0.5s forwards 0s linear;
+  animation: fadeInAnim 0.5s forwards 0s linear;
 }
 
 .fadeOut {
-	animation: fadeOutAnim 0.5s forwards 0s linear;
+  animation: fadeOutAnim 0.5s forwards 0s linear;
 }
 
 .open {
-	animation: openAnim 0.5s forwards 0s linear;
+  animation: openAnim 0.5s forwards 0s linear;
 }
 
 .close {
-	animation: close 0.5s forwards 0s linear;
+  animation: close 0.5s forwards 0s linear;
+}
+
+.styled-select {
+  transition: all 0.2s;
+  padding-bottom: 1px;
+  line-height: normal;
+  font-size: 0.875rem;
+  padding-left: 0.75rem;
+  padding-right: 2rem;
+  height: 2rem;
+  border-radius: 0.125rem;
+  border: 2px solid;
+}
+
+table {
+  width: 100%;
+  font-family: "Poppins", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  text-align: left;
+  table-layout: fixed;
+}
+
+th {
+  padding: 1rem 2rem;
+  text-align: left;
+  line-height: 1rem;
+  font-size: 14px;
+  color: #7209b7;
+  font-weight: 600;
+  background: #f1f1f4;
+}
+
+th:nth-child(1) {
+  border-radius: 0.5rem 0px 0px 0.5rem;
+}
+
+th:nth-last-child(1) {
+  border-radius: 0px 0.5rem 0.5rem 0px;
+}
+
+tr:hover {
+  background: #f7f7f9;
+}
+
+td {
+  font-size: 14px;
+  padding: 1rem 2rem;
+  line-height: 1.25rem;
+  white-space: nowrap;
+}
+
+.container {
+  flex: 1;
+}
+
+@media screen and (max-width: 766px) {
+  table {
+    border: 0;
+  }
+
+  table caption {
+    font-size: 1.3em;
+  }
+
+  table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  table tr {
+    display: block;
+    margin-bottom: 1rem;
+    background: #f1f1f4;
+    border-radius: 0.625rem;
+  }
+
+  table td {
+    display: block;
+
+    padding: 0.5rem 2rem;
+    text-align: right;
+  }
+
+  table td::before {
+    content: attr(data-label);
+    float: left;
+    color: #7209b7;
+    font-weight: bold;
+  }
+
+  table td:last-child {
+    border-bottom: 0;
+  }
 }

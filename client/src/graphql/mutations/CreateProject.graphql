@@ -1,39 +1,20 @@
 mutation CreateProject($name: String!, $desc: String!) {
-	createProject(name: $name, desc: $desc) {
-		id
-		name
-		desc
-		createdAt
-		users {
-			id
-			role
-			user {
-				email
-				id
-				name
-			}
-		}
-		issues {
-			name
-			desc
-			severity
-			status
-			id
-			createdAt
-			createdBy {
-				email
-				name
-				id
-			}
-			comments {
-				id
-				createdAt
-				postedBy {
-					id
-					name
-				}
-				comment
-			}
-		}
-	}
+  createProject(name: $name, desc: $desc) {
+    errors {
+      field
+      message
+    }
+    response {
+      canEdit
+      project {
+        name
+        desc
+        id
+        createdAt
+        owner {
+          name
+        }
+      }
+    }
+  }
 }

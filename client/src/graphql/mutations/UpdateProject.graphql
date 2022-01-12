@@ -1,0 +1,14 @@
+mutation UpdateProject($id: Float!, $name: String, $desc: String) {
+  updateProject(id: $id, name: $name, desc: $desc) {
+    errors {
+      field
+      message
+    }
+    response {
+      project {
+        name
+        desc
+      }
+    }
+  }
+}

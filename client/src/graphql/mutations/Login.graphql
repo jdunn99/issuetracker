@@ -1,43 +1,15 @@
 mutation Login($email: String!, $password: String!) {
-	login(email: $email, password: $password) {
-		errors {
-			field
-			message
-		}
-		user {
-			email
-			id
-			role
-			projects {
-				project {
-					id
-					name
-					desc
-					issues {
-						name
-						desc
-						severity
-						status
-						id
-						createdAt
-						comments {
-							id
-							createdAt
-							postedBy {
-								id
-								name
-							}
-							comment
-						}
-
-						createdBy {
-							email
-							name
-							id
-						}
-					}
-				}
-			}
-		}
-	}
+  login(email: $email, password: $password) {
+    errors {
+      field
+      message
+    }
+    response {
+      user {
+        id
+        email
+        name
+      }
+    }
+  }
 }

@@ -1,39 +1,16 @@
 query Project($id: Float!) {
-	project(id: $id) {
-		id
-		name
-		desc
-		createdAt
-		users {
-			id
-			role
-			user {
-				email
-				id
-				name
-			}
-		}
-		issues {
-			name
-			desc
-			severity
-			status
-			id
-			createdAt
-			comments {
-				id
-				createdAt
-				postedBy {
-					id
-					name
-				}
-				comment
-			}
-			createdBy {
-				email
-				name
-				id
-			}
-		}
-	}
+  project(id: $id) {
+    response {
+      canEdit
+      project {
+        id
+        name
+        desc
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
 }

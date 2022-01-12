@@ -1,0 +1,7 @@
+query Users($query: String!, $limit: Float!) {
+  usersByQuery(query: $query, limit: $limit) {
+    name
+    email
+    id
+  }
+}

@@ -1,3 +1,9 @@
-mutation RemoveUserFromProject($id: Float!) {
-	removeUserFromProject(id: $id)
+mutation RemoveUserFromProject($projectId: Float!, $userIds: [Int!]!) {
+  removeUsersFromProject(projectId: $projectId, userIds: $userIds) {
+    errors {
+      field
+      message
+    }
+    response
+  }
 }

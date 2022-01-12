@@ -1,39 +1,45 @@
 import {
-	Entity,
-	PrimaryGeneratedColumn,
-	CreateDateColumn,
-	Column,
-	BaseEntity,
-	OneToMany,
-} from 'typeorm';
-import { Field, ObjectType, Int } from 'type-graphql';
-import { Issue } from './Issue';
-import { ProjectRole } from './ProjectRole';
+  Entity,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  Column,
+  BaseEntity,
+  OneToMany,
+  ManyToOne,
+} from "typeorm";
+import { Field, ObjectType, Int } from "type-graphql";
+import { Issue } from "./Issue";
+import { User } from "./User";
+import { ProjectManagement } from "./ProjectManagement";
 
 @ObjectType()
 @Entity()
 export class Project extends BaseEntity {
-	@PrimaryGeneratedColumn()
-	@Field(() => Int)
-	id: number;
+  @PrimaryGeneratedColumn()
+  @Field(() => Int)
+  id: number;
 
-	@OneToMany(() => ProjectRole, (role) => role.project, { cascade: true })
-	@Field(() => [ProjectRole])
-	users: ProjectRole[];
+  @ManyToOne(() => User, (user) => user.ownedProjects)
+  @Field(() => User)
+  owner: User;
 
-	@Column()
-	@Field()
-	name: string;
+  @OneToMany(() => ProjectManagement, (proj) => proj.project)
+  @Field(() => [ProjectManagement])
+  projectManagement: ProjectManagement[];
 
-	@Column()
-	@Field()
-	desc: string;
+  @Column()
+  @Field()
+  name: string;
 
-	@OneToMany(() => Issue, (issue) => issue.project, { cascade: true })
-	@Field(() => [Issue])
-	issues: Issue[];
+  @Column()
+  @Field()
+  desc: string;
 
-	@CreateDateColumn()
-	@Field(() => Date)
-	createdAt = new Date();
+  @OneToMany(() => Issue, (issue) => issue.project, { cascade: true })
+  @Field(() => [Issue])
+  issues: Issue[];
+
+  @CreateDateColumn()
+  @Field(() => Date)
+  createdAt = new Date();
 }

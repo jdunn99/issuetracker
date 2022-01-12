@@ -1,24 +1,24 @@
 subscription SendIssue {
-	sendIssue {
-		name
-		desc
-		severity
-		status
-		id
-		createdAt
-		createdBy {
-			email
-			name
-			id
-		}
-		comments {
-			id
-			createdAt
-			postedBy {
-				id
-				name
-			}
-			comment
-		}
-	}
+  sendIssue {
+    name
+    desc
+    severity
+    status
+    id
+    createdAt
+    owner {
+      email
+      name
+      id
+    }
+    comments {
+      id
+      createdAt
+      postedBy {
+        id
+        name
+      }
+      comment
+    }
+  }
 }

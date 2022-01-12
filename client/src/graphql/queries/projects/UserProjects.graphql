@@ -1,0 +1,16 @@
+query UserProjects {
+  getUserProjects {
+    errors {
+      field
+      message
+    }
+    response {
+      name
+      role
+      issues
+      owner
+      createdAt
+      id
+    }
+  }
+}

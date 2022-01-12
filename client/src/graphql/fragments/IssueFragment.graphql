@@ -1,0 +1,10 @@
+fragment IssueFragment on UserIssue {
+  name
+  status
+  severity
+  createdAt
+  projectName
+  projectId
+  desc
+  id
+}

@@ -1,67 +1,67 @@
-import React from 'react';
-import { Box, Flex, Button } from '@chakra-ui/react';
-import { Navbar } from '../components/Navbar';
-import { Sidebar } from '../components/Sidebar';
-import { useUserQuery } from '../generated/graphql';
-import { usePersistedState } from '../util/persistState';
-import { Projects } from '../components/profile/Projects';
-import { Issues } from '../components/profile/Issues';
+import React from "react";
+import { Box, Flex, useToast } from "@chakra-ui/react";
+import { Sidebar } from "../components/Sidebar";
+import { useUserQuery } from "../generated/graphql";
+import { ProjectsPage } from "../components/profile/ProjectsPage";
+import SidebarContext from "../util/SidebarContext";
+import { HomePage } from "../components/profile/HomePage";
+import { useHistory } from "react-router-dom";
 
+/**
+ * Profile component rendered by the Router
+ */
 export const Profile: React.FC = () => {
-	window.localStorage.clear();
-	const [active, setActive] = usePersistedState('Projects', 'active');
-	const { data, loading } = useUserQuery();
+  /************** SETUP *************/
+  const [rendered, setRendered] = React.useState<JSX.Element>();
 
-	function actionHandler() {
-		switch (active) {
-			case 'Projects':
-				return <Projects data={data} />;
-			case 'Issues':
-				return <Issues data={data} />;
-		}
-	}
+  const { data, loading } = useUserQuery();
 
-	return (
-		<Box maxH="100vh" overflowY="hidden">
-			<main>
-				<Navbar overview />
-				<Flex>
-					<Sidebar background="#7209B7">
-						<Box textAlign="center" px="7rem"></Box>
-						<Box textAlign="center" p={1}>
-							<Button
-								bg={
-									active === 'Projects'
-										? '#AF0EDE'
-										: 'transparent'
-								}
-								color="white"
-								_hover={{ background: '#AF0EDE' }}
-								onClick={() => setActive('Projects')}
-							>
-								Projects
-							</Button>
-						</Box>
-						<Box textAlign="center" p={1}>
-							<Button
-								bg={
-									active === 'Issues'
-										? '#AF0EDE'
-										: 'transparent'
-								}
-								color="white"
-								_hover={{ background: '#AF0EDE' }}
-								onClick={() => setActive('Issues')}
-							>
-								Issues
-							</Button>
-						</Box>
-					</Sidebar>
-					<Flex flexDir="column" className="right-col">
-						{actionHandler()}
-					</Flex>
-				</Flex>
-			</main>
-		</Box>
-	);
+  const { active, changeActive } = React.useContext(SidebarContext);
+
+  const toast = useToast();
+  const history = useHistory();
+
+  /************** HOOKS *************/
+  /**
+   * Make sure the User is signed in before accessing this page.
+   */
+  React.useEffect(() => {
+    if (!loading && data && !data.user) {
+      toast({
+        title: "Error",
+        status: "error",
+        isClosable: true,
+        description: "Not signed in",
+      });
+      history.push("/signin");
+    }
+  }, [data, history, loading, toast]);
+
+  /**
+   * Handle any input from the Sidebar context and render the component
+   */
+  React.useEffect(() => {
+    if (data)
+      switch (active) {
+        case "Home":
+          setRendered(<HomePage />);
+          return;
+        case "Projects":
+          setRendered(<ProjectsPage />);
+          return;
+        default:
+          changeActive("Home");
+          return;
+      }
+  }, [data, active, changeActive]);
+
+  /************** RENDER *************/
+  return data && data.user ? (
+    <Box maxH="100vh" overflowY="hidden">
+      <Flex>
+        <Sidebar name={data.user.name} email={data.user.email} />
+        {rendered}
+      </Flex>
+    </Box>
+  ) : null;
 };
