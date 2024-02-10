@@ -1,6 +1,0 @@
-mutation CreateComment($content: String!, $issueId: Float!) {
-	createComment(content: $content, issueId: $issueId) {
-		field
-		message
-	}
-}

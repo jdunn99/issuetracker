@@ -1,9 +1,0 @@
-mutation LeaveProject($id: Float!) {
-  leaveProject(id: $id) {
-    errors {
-      field
-      message
-    }
-    response
-  }
-}
