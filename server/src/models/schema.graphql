@@ -11,7 +11,12 @@ type Mutation {
     email: String!
     password: String!
   ): User
-  # createProject(name: String!, description: String!): Project
+  createProject(
+    name: String!
+    url: String!
+    description: String!
+    creator_id: ID!
+  ): Project
 }
 
 scalar Date

@@ -1,3 +1,4 @@
+import "dotenv/config";
 import * as path from "path";
 import { Pool } from "pg";
 import { promises as fs } from "fs";
@@ -21,7 +22,6 @@ export async function migrateToLatest() {
   });
 
   const { error, results } = await migrator.migrateToLatest();
-  console.log(error, results);
 
   results?.forEach((it) => {
     if (it.status === "Success") {

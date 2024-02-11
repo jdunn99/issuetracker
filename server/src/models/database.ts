@@ -1,8 +1,11 @@
+import "dotenv/config";
 import { Kysely, PostgresDialect } from "kysely";
 import { Pool } from "pg";
 import { User, UserTable } from "./user-model";
+import { ProjectTable } from "./project-model";
 
 export interface Database {
+  project: ProjectTable;
   user: UserTable;
 }
 

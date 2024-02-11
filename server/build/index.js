@@ -40,6 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var server_1 = require("@apollo/server");
+require("dotenv/config");
 var standalone_1 = require("@apollo/server/standalone");
 var express_1 = __importDefault(require("express"));
 var graphql_tag_1 = __importDefault(require("graphql-tag"));
@@ -54,6 +55,7 @@ function main() {
             switch (_a.label) {
                 case 0:
                     app = (0, express_1.default)();
+                    console.log(process.env);
                     app.use((0, cors_1.default)());
                     app.use(express_1.default.json());
                     typeDefs = (0, graphql_tag_1.default)((0, fs_1.readFileSync)("./src/models/schema.graphql", { encoding: "utf-8" }));

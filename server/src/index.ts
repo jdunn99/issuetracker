@@ -6,6 +6,7 @@ import gql from "graphql-tag";
 import cors from "cors";
 import { readFileSync } from "fs";
 import userResolver from "./resolvers/user-resolver";
+import ProjectResolver from "./resolvers/project-resolver";
 
 const PORT = 4000;
 
@@ -19,11 +20,9 @@ async function main() {
     readFileSync("./src/models/schema.graphql", { encoding: "utf-8" })
   );
 
-  // await migrateToLatest();
-
   const server = new ApolloServer({
     typeDefs,
-    resolvers: [userResolver],
+    resolvers: [userResolver, ProjectResolver],
   });
 
   await startStandaloneServer(server, {
