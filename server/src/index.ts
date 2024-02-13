@@ -29,6 +29,9 @@ async function main() {
     listen: {
       port: PORT,
     },
+    context: async ({ req, res }) => {
+      return { req, res };
+    },
   });
 }
 

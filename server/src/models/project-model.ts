@@ -6,17 +6,21 @@ import {
   Selectable,
   Updateable,
 } from "kysely";
+import { Connection, Edge } from "./types";
 
 export interface ProjectTable {
   id: Generated<number>;
-  name: string;
-  url: string;
-  creator_id: number;
-  description: string;
-  image: Nullable<string>;
   created_at: ColumnType<Date, string | undefined, never>;
   updated_at: ColumnType<Date, string, Date>;
+  creator_id: number;
+  description: string;
+  name: string;
+  url: string;
+  image: Nullable<string>;
 }
 export type Project = Selectable<ProjectTable>;
 export type NewProject = Insertable<ProjectTable>;
 export type UpdatedProject = Updateable<ProjectTable>;
+
+export type ProjectEdge = Edge<Project>;
+export type ProjectConnection = Connection<ProjectEdge>;

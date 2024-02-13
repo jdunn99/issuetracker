@@ -1,7 +1,181 @@
+interface Node {
+  id: ID!
+  created_at: DateTime
+  updated_at: DateTime
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+
+type User implements Node {
+  id: ID!
+  created_at: DateTime
+  updated_at: DateTime
+  bio: String
+  first_name: String
+  last_name: String
+  projects(first: Int, after: String): ProjectConnection!
+  createdProjects(first: Int, after: String): ProjectConnection!
+  createdIssues(first: Int, after: String): IssueConnection!
+  assignedIssues(first: Int, after: String): IssueConnection!
+  workspaces(first: Int, after: String): WorkspaceConnection!
+  createdWorkspaces(first: Int, after: String): WorkspaceConnection!
+  comments(first: Int, after: String): CommentConnection!
+  email: String
+  username: String
+}
+
+type UserConnection {
+  edges: [UserEdge]
+  pageInfo: PageInfo!
+}
+
+type UserEdge {
+  cursor: String!
+  node: User
+}
+
+type Project implements Node {
+  id: ID!
+  created_at: DateTime
+  updated_at: DateTime
+  creator: User
+  description: String
+  name: String
+  image: String
+  url: String
+  role: ProjectRole
+  users(first: Int, after: String): UserConnection!
+  workspaces(first: Int, after: String): WorkspaceConnection!
+  issues(first: Int, after: String): IssueConnection!
+}
+type ProjectConnection {
+  edges: [ProjectEdge]
+  pageInfo: PageInfo!
+}
+
+type ProjectEdge {
+  cursor: String!
+  node: Project
+}
+
+type Workspace implements Node {
+  id: ID!
+  created_at: DateTime
+  updated_at: DateTime
+  name: String
+  description: String
+  url: String
+  image: String
+  creator: User
+  project: Project
+  users(first: Int, after: String): UserConnection!
+}
+
+type WorkspaceEdge {
+  cursor: String!
+  node: Workspace
+}
+
+type WorkspaceConnection {
+  edges: [WorkspaceEdge]
+  pageInfo: PageInfo!
+}
+
+type Issue implements Node {
+  id: ID!
+  created_at: DateTime
+  updated_at: DateTime
+  name: String
+  description: String
+  status: IssueStatus
+  severity: IssueSeverity
+  creator: User
+  workspace: Workspace
+  project: Project
+  assignedUsers(first: Int, after: String): UserConnection!
+  comments(first: Int, after: String): CommentConnection!
+}
+
+type AssignUsersToIssuePayload {
+  success: Boolean!
+  message: String
+  issue: Issue
+}
+
+type IssueEdge {
+  cursor: String!
+  node: Issue
+}
+
+type IssueConnection {
+  edges: [IssueEdge]
+  pageInfo: PageInfo!
+}
+
+type Comment implements Node {
+  id: ID!
+  created_at: DateTime
+  updated_at: DateTime
+  text: String
+  issue: Issue
+  author: User
+}
+
+type CommentEdge {
+  cursor: String!
+  node: Comment
+}
+
+type CommentConnection {
+  edges: [CommentEdge]
+  pageInfo: PageInfo!
+}
+
+enum IssueSeverity {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum IssueStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  TESTING
+  CLOSED
+}
+
+enum ProjectRole {
+  VIEWER
+  EDITOR
+  ADMIN
+  CREATOR
+}
+
+"""
+Represents the time and date as a string format
+"""
+scalar DateTime
+
 type Query {
+  node(id: ID!): Node
   user(id: ID!): User
-  users: [User]
-  # projects: ProjectConnection
+  userByEmail(email: String): User
+  userByUsername(username: String): User
+  users(first: Int, after: String): UserConnection!
+  project(id: ID!): Project
+  projectByURL(url: String!): Project
+  projects(first: Int, after: String): ProjectConnection!
+  workspace(id: ID!): Workspace
+  workspaceByURL(url: String!): Workspace
+  workspaces(first: Int, after: String): WorkspaceConnection!
+  issue(id: ID!): Issue
+  # TODO: ISSUE FILTERS
+  issues(first: Int, after: String): IssueConnection!
 }
 
 type Mutation {
@@ -11,81 +185,45 @@ type Mutation {
     email: String!
     password: String!
   ): User
+  updateUser(id: ID!, first_name: String, last_name: String): User
+  deleteUser(id: ID!): ID
   createProject(
     name: String!
     url: String!
     description: String!
     creator_id: ID!
   ): Project
-}
-
-scalar Date
-
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
-
-type User {
-  id: ID
-  first_name: String
-  last_name: String
-  projects: [Project]
-  workspaces: [Workspace]
-  created_issues: [Issue]
-  assigned_issues: [Issue]
-  created_at: Date
-  updated_at: Date
-}
-
-type Project {
-  id: ID
-  name: String
-  created_at: Date
-  updated_at: Date
-  url: String
-  creator: User
-  description: String
-  image: String
-  workspaces: [Workspace]
-}
-type ProjectConnection {
-  edges: [ProjectEdge]
-  pageInfo: PageInfo!
-}
-type ProjectEdge {
-  cursor: String!
-  node: Project!
-}
-
-type Workspace {
-  id: ID
-  name: String
-  url: String
-  description: String
-  creator: User
-  issues: [Issue]
-}
-
-type Issue {
-  id: ID
-  name: String
-  creator: User
-  assigned_to: [User]
-  issue_type: IssueType
-}
-
-enum IssueType {
-  FEATURE
-  CHANGE
-  BUG
-  TASK
-}
-
-enum IssueLevel {
-  LOW
-  MEDIUM
-  HIGH
+  updateProject(
+    id: ID!
+    name: String
+    description: String
+    role: ProjectRole
+  ): Project
+  deleteProject(id: ID!): ID
+  createWorkspace(
+    name: String!
+    creatord_id: ID!
+    project_id: ID!
+    description: String!
+  ): Workspace
+  updateWorkspace(id: ID!, name: String, description: String): Workspace
+  deleteWorkspace(id: ID!): ID
+  createIssue(
+    name: String!
+    description: String!
+    status: IssueStatus!
+    severity: IssueSeverity!
+    creator_id: ID!
+    project_id: ID!
+    workspace_id: ID!
+  ): Issue
+  assignIssueToUsers(id: ID!, user: [ID!]!): AssignUsersToIssuePayload!
+  updateIssue(
+    id: ID!
+    name: String
+    description: String
+    status: IssueStatus
+    severity: IssueSeverity
+  ): Issue
+  deleteIssue(id: ID!): ID
 }

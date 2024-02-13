@@ -1,42 +1,71 @@
 import { jsonArrayFrom } from "kysely/helpers/postgres";
 import { db } from "../models/database";
-import { User, NewUser } from "../models/user-model";
+import {
+  User,
+  NewUser,
+  UpdatedUser,
+  UserConnection,
+} from "../models/user-model";
+import { Updateable, sql } from "kysely";
+import { ConnectionArgs, DataWithError, FieldError } from "../models/types";
+import UserController from "../controllers/user-controller";
+import { ProjectConnection } from "../models/project-model";
 
-export const UserService = {
-  users: async () => {
-    // const result = await db
-    //   .selectFrom("user")
-    //   .leftJoin("project", "user.id", "project.creator_id")
-    //   .selectAll()
-    //   .execute();
-    // const result = await sql<User[]>`
-    // SELECT "user"."id", "project"."id" AS project_id FROM "user" LEFT JOIN "project" ON "user"."id" = "project"."creator_id";
-    // `.execute(db);
+/**
+ * Defines the functions for handling request and response
+ * logic to/from the graphql resolver
+ */
+const UserService = {
+  /**
+   * Calls user controller to return user from database matching the id
+   * @param id - The requested user's ID
+   */
+  async user(id: number) {
+    try {
+      const result = UserController.getUserByID(id);
 
-    const result = await db
-      .selectFrom("user")
-      .selectAll("user")
-      .select((eb) => [
-        jsonArrayFrom(eb.selectFrom("project").selectAll()).as("projects"),
-      ])
-      .execute();
-    console.log(result);
-    return result;
+      if (typeof result === "undefined") {
+        throw new Error("User not found");
+      }
+
+      return result;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   },
-  user: async (id: number): Promise<User> => {
-    return await db
-      .selectFrom("user")
-      .where("id", "=", id)
-      .innerJoin("project", "creator_id", "id")
-      .selectAll()
-      .executeTakeFirstOrThrow();
-  },
-  createUser: async (user: NewUser): Promise<User> => {
-    return await db
-      .insertInto("user")
-      .values(user)
-      .returningAll()
-      .executeTakeFirstOrThrow();
+
+  /**
+   * @async
+   * @function
+   * Retrieves users from database and converts into connection format
+   *
+   * @returns The requested users
+   */
+  async users({ first, after }: ConnectionArgs): Promise<UserConnection> {
+    try {
+      const data = await UserController.getUsers({ first, after });
+      const edges = data.map((node) => ({
+        cursor: node.id.toString(),
+        node,
+      }));
+
+      return {
+        edges,
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+        },
+      };
+    } catch (error) {
+      return {
+        edges: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+        },
+      };
+    }
   },
 };
 
