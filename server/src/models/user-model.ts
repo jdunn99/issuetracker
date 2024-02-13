@@ -5,7 +5,6 @@ import {
   Selectable,
   Updateable,
 } from "kysely";
-import { Project } from "./project-model";
 import { Connection, Edge } from "./types";
 
 export interface UserTable {

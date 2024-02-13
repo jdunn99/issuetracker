@@ -8,7 +8,6 @@ enum Role {
 }
 
 export interface ProjectUserTable {
-  id: Generated<number>;
   role: Role;
   user_id: number;
   project_id: number;

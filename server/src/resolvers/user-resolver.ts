@@ -36,38 +36,33 @@ const UserResolver = {
     users(_parent: Root, { first, after }: ConnectionArgs) {
       return UserService.users({ first, after });
     },
+
+    /**
+     * @function
+     * Resolves a user given their unique email
+     */
+    userByEmail(_parent: Root, { email }: User) {
+      return UserService.userByEmail(email);
+    },
+
+    /**
+     * @function
+     * Resolves a user given their unique username
+     */
+    userByUsername(_parent: Root, { username }: User) {
+      return UserService.userByUsername(username);
+    },
   },
   User: {
     projects({ id }: User, { first, after }: ConnectionArgs) {
       return ProjectService.getProjectsByUserId(id, { first, after });
     },
   },
+  Mutation: {
+    createUser(_parent: Root, user: NewUser) {
+      return UserService.createUser(user);
+    },
+  },
 };
-
-// const userResolver = {
-//   Query: {
-//     users: () => UserService.users(),
-//     // user: async (_parent: Root, user: User, { req, res }: Context) => {
-//     //   console.log(req, res);
-//     //   return await UserService.user(user.id);
-//     // },
-//     // userById: async (_parent: Root, user: User) => {
-//     //   return await UserService.user(user.id);
-//     // },
-//   },
-//   Mutation: {
-//     // createUser: async (_parent: Root, user: NewUser) => {
-//     //   return await UserService.createUser(user);
-//     // },
-//     // updateUser: async (_parent: Root, { id, ...user }: any) => {
-//     //   return await UserService.updateUser(id, user);
-//     // },
-//   },
-//   User: {
-//     projects: async (user: User, args: any) => {
-//       return await ProjectService.getProjectsByUserId(user.id);
-//     },
-//   },
-// };
 
 export default UserResolver;

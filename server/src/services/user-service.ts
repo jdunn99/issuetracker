@@ -1,15 +1,7 @@
-import { jsonArrayFrom } from "kysely/helpers/postgres";
-import { db } from "../models/database";
-import {
-  User,
-  NewUser,
-  UpdatedUser,
-  UserConnection,
-} from "../models/user-model";
-import { Updateable, sql } from "kysely";
+import { NewUser, UserConnection } from "../models/user-model";
 import { ConnectionArgs, DataWithError, FieldError } from "../models/types";
 import UserController from "../controllers/user-controller";
-import { ProjectConnection } from "../models/project-model";
+import bcrypt from "bcrypt";
 
 /**
  * Defines the functions for handling request and response
@@ -29,6 +21,37 @@ const UserService = {
       }
 
       return result;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  /**
+   * @function
+   * Retrieves a user given their email
+   *
+   * @param email - The requested unique email
+   * @returns The resulting user
+   */
+  userByEmail(email: string) {
+    try {
+      return UserController.getUserByEmail(email);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+
+  /**
+   * @function
+   * Retrieves a user given their username
+   *
+   * @param username - The requested unique username
+   * @returns The resulting user
+   */
+  userByUsername(username: string) {
+    try {
+      return UserController.getUsersByUsername(username);
     } catch (error) {
       console.error(error);
       return null;
@@ -65,6 +88,18 @@ const UserService = {
           hasPreviousPage: false,
         },
       };
+    }
+  },
+
+  async createUser(user: NewUser) {
+    try {
+      // hash password. store hash in db
+      const hashed = await bcrypt.hash(user.password, 10);
+      return UserController.createUser({ ...user, password: hashed });
+    } catch (error) {
+      // TODO: Error handling on mutation input
+      console.error(error);
+      return null;
     }
   },
 };

@@ -7,7 +7,7 @@ import {
   Updateable,
 } from "kysely";
 
-export interface WorspaceTable {
+export interface WorkspaceTable {
   id: Generated<number>;
   created_at: ColumnType<Date, string | undefined, never>;
   updated_at: ColumnType<Date, string, Date>;
@@ -18,6 +18,6 @@ export interface WorspaceTable {
   creator_id: number;
   project_id: number;
 }
-export type Workspace = Selectable<WorspaceTable>;
-export type NewWorkspace = Insertable<WorspaceTable>;
-export type UpdatedWorkspace = Updateable<WorspaceTable>;
+export type Workspace = Selectable<WorkspaceTable>;
+export type NewWorkspace = Insertable<WorkspaceTable>;
+export type UpdatedWorkspace = Updateable<WorkspaceTable>;

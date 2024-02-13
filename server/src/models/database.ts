@@ -5,10 +5,18 @@ import { User, UserTable } from "./user-model";
 import { ProjectTable } from "./project-model";
 import { StandaloneServerContextFunctionArgument } from "@apollo/server/dist/esm/standalone";
 import { ConnectionArgs } from "./types";
+import { WorkspaceTable } from "./workspace-model";
+import { IssueTable } from "./issue-model";
+import { ProjectUserTable } from "./project-user-model";
+import { IssueUserTable } from "./issue-user-model";
 
 export interface Database {
   project: ProjectTable;
   user: UserTable;
+  workspace: WorkspaceTable;
+  issue: IssueTable;
+  project_user: ProjectUserTable;
+  issue_user: IssueUserTable;
 }
 
 export type Context = StandaloneServerContextFunctionArgument;
