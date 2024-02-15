@@ -5,6 +5,7 @@ import {
   Selectable,
   Updateable,
 } from "kysely";
+import { Payload } from "./types";
 
 export type IssueSeverity = "LOW" | "MEDIUM" | "HIGH";
 export type IssueStatus =
@@ -31,3 +32,7 @@ export interface IssueTable {
 export type Issue = Selectable<IssueTable>;
 export type NewIssue = Insertable<IssueTable>;
 export type UpdatedIssue = Updateable<IssueTable>;
+
+export interface IssuePayload extends Payload {
+  issue: Issue | null;
+}

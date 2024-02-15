@@ -1,5 +1,10 @@
-import { NewUser, UserConnection } from "../models/user-model";
-import { ConnectionArgs, DataWithError, FieldError } from "../models/types";
+import {
+  NewUser,
+  UpdatedUser,
+  UserConnection,
+  UserPayload,
+} from "../models/user-model";
+import { ConnectionArgs } from "../models/types";
 import UserController from "../controllers/user-controller";
 import bcrypt from "bcrypt";
 
@@ -91,15 +96,107 @@ const UserService = {
     }
   },
 
-  async createUser(user: NewUser) {
+  /**
+   * @async
+   * @function
+   * Registers a new user to IssueTracker.
+   *
+   * @param user - The requested new user's data
+   * @returns - The newly generated user
+   */
+  async createUser(user: NewUser): Promise<UserPayload> {
     try {
+      if (user.password.length < 6) {
+        return {
+          user: null,
+          errors: [
+            {
+              message: "Password must be longer than 6 characters",
+              field: ["create", "user", "password"],
+            },
+          ],
+        };
+      }
+
       // hash password. store hash in db
       const hashed = await bcrypt.hash(user.password, 10);
-      return UserController.createUser({ ...user, password: hashed });
+      const dbUser = await UserController.createUser({
+        ...user,
+        password: hashed,
+      });
+
+      return {
+        user: dbUser,
+        errors: [],
+      };
     } catch (error) {
       // TODO: Error handling on mutation input
+
       console.error(error);
-      return null;
+      return {
+        errors: [
+          {
+            field: ["create", "user"],
+            message: (error as any).toString(),
+          },
+        ],
+        user: null,
+      };
+    }
+  },
+
+  async updateUser(user: UpdatedUser): Promise<UserPayload> {
+    try {
+      if (!user.id) {
+        return {
+          user: null,
+          errors: [
+            {
+              field: ["update", "user", "id"],
+              message: "Missing user Id",
+            },
+          ],
+        };
+      }
+
+      let updatedPassword: string | undefined;
+
+      if (user.password) {
+        if (user.password.length < 6) {
+          return {
+            user: null,
+            errors: [
+              {
+                field: ["update", "user", "password"],
+                message: "Password must be longer than 6 characters",
+              },
+            ],
+          };
+        }
+
+        updatedPassword = await bcrypt.hash(user.password, 10);
+      }
+
+      const updatedUser = await UserController.updateUser({
+        password: updatedPassword,
+        ...user,
+      });
+
+      return {
+        user: updatedUser,
+        errors: [],
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        user: null,
+        errors: [
+          {
+            field: ["update", "user"],
+            message: (error as any).toString(),
+          },
+        ],
+      };
     }
   },
 };

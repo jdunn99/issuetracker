@@ -6,6 +6,7 @@ import {
   Selectable,
   Updateable,
 } from "kysely";
+import { Payload } from "./types";
 
 export interface WorkspaceTable {
   id: Generated<number>;
@@ -21,3 +22,7 @@ export interface WorkspaceTable {
 export type Workspace = Selectable<WorkspaceTable>;
 export type NewWorkspace = Insertable<WorkspaceTable>;
 export type UpdatedWorkspace = Updateable<WorkspaceTable>;
+
+export interface WorkspacePayload extends Payload {
+  workspace: Workspace | null;
+}

@@ -6,7 +6,7 @@ import {
   Selectable,
   Updateable,
 } from "kysely";
-import { Connection, Edge } from "./types";
+import { Connection, Edge, Payload } from "./types";
 
 export interface ProjectTable {
   id: Generated<number>;
@@ -24,3 +24,7 @@ export type UpdatedProject = Updateable<ProjectTable>;
 
 export type ProjectEdge = Edge<Project>;
 export type ProjectConnection = Connection<ProjectEdge>;
+
+export interface ProjectPayload extends Payload {
+  project: Project | null;
+}

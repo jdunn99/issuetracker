@@ -1,5 +1,5 @@
 import { Root } from "@apollo/protobufjs";
-import { NewProject } from "../models/project-model";
+import { NewProject, Project } from "../models/project-model";
 import ProjectService from "../services/project-service";
 
 /**
@@ -14,10 +14,13 @@ const ProjectResolver = {
      * @function
      * Retrieves
      */
+    project(_parent: Root, project: Project) {
+      return ProjectService.getProject(project.id);
+    },
   },
   Mutation: {
-    createProject: async (_parent: Root, project: NewProject) => {
-      return await ProjectService.createProject(project);
+    createProject(_parent: Root, project: NewProject) {
+      return ProjectService.createProject(project);
     },
   },
 };

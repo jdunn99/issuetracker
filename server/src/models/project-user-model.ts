@@ -1,10 +1,10 @@
-import { Generated, Insertable, Selectable, Updateable } from "kysely";
+import { Insertable, Selectable, Updateable } from "kysely";
 
-enum Role {
-  VIEWER,
-  EDITOR,
-  ADMIN,
-  CREATOR,
+export enum Role {
+  VIEWER = "VIEWER",
+  EDITOR = "EDITOR",
+  ADMIN = "ADMIN",
+  CREATOR = "CREATOR",
 }
 
 export interface ProjectUserTable {

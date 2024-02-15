@@ -15,8 +15,8 @@ export interface Database {
   user: UserTable;
   workspace: WorkspaceTable;
   issue: IssueTable;
-  project_user: ProjectUserTable;
-  issue_user: IssueUserTable;
+  projectuser: ProjectUserTable;
+  issueuser: IssueUserTable;
 }
 
 export type Context = StandaloneServerContextFunctionArgument;

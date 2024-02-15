@@ -4,6 +4,7 @@ import {
   NewProject,
   Project,
   ProjectConnection,
+  ProjectPayload,
 } from "../models/project-model";
 import { ConnectionArgs } from "../models/types";
 
@@ -49,11 +50,22 @@ const ProjectService = {
     }
   },
 
+  async getProject(id: number) {
+    try {
+      return ProjectController.project(id);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+
   async getProjectsByUserId(
     id: number,
     { first, after }: ConnectionArgs
   ): Promise<ProjectConnection> {
     try {
+      let endCursor: string | undefined;
+
       const data = await ProjectController.getProjectsForUser(id, {
         first,
         after,
@@ -64,10 +76,14 @@ const ProjectService = {
         node,
       }));
 
+      if (edges.length > 0) {
+        endCursor = edges[edges.length - 1].cursor;
+      }
+
       return {
         edges,
         pageInfo: {
-          endCursor: edges[edges.length - 1].cursor,
+          endCursor,
           hasNextPage: false,
           hasPreviousPage: false,
         },
@@ -83,13 +99,26 @@ const ProjectService = {
       };
     }
   },
-  createProject: async (project: NewProject) => {
-    console.log(project);
-    return await db
-      .insertInto("project")
-      .values(project)
-      .returningAll()
-      .executeTakeFirstOrThrow();
+  async createProject(project: NewProject): Promise<ProjectPayload> {
+    try {
+      const newProject = await ProjectController.createProject(project);
+
+      return {
+        project: newProject,
+        errors: [],
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        errors: [
+          {
+            field: ["create", "project"],
+            message: (error as any).toString(),
+          },
+        ],
+        project: null,
+      };
+    }
   },
 };
 

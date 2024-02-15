@@ -13,10 +13,9 @@ export type FieldError = {
   field: string[];
 };
 
-export type DataWithError<T> = {
-  data: T | null;
-  error: FieldError | null;
-};
+export interface Payload {
+  errors: FieldError[];
+}
 
 export type PageInfo = {
   endCursor?: string;

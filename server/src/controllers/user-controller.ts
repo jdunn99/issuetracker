@@ -1,6 +1,6 @@
 import { db, getPaginatedResult } from "../models/database";
 import { ConnectionArgs } from "../models/types";
-import { NewUser, User } from "../models/user-model";
+import { NewUser, UpdatedUser, User } from "../models/user-model";
 
 /**
  * Defines the functions for retrieving user related entities from the database
@@ -70,6 +70,22 @@ const UserController = {
     return db
       .insertInto("user")
       .values(user)
+      .returningAll()
+      .executeTakeFirstOrThrow();
+  },
+
+  /**
+   * @function
+   * Updates a user given requested paramaters
+   *
+   * @param user The requested user being updated
+   * @returns The newly updated user
+   */
+  updateUser(user: UpdatedUser): Promise<User> {
+    return db
+      .updateTable("user")
+      .set(user)
+      .where("id", "=", user.id!)
       .returningAll()
       .executeTakeFirstOrThrow();
   },

@@ -5,7 +5,7 @@ import {
   Selectable,
   Updateable,
 } from "kysely";
-import { Connection, Edge } from "./types";
+import { Connection, Edge, Payload } from "./types";
 
 export interface UserTable {
   id: Generated<number>;
@@ -24,3 +24,7 @@ export type UpdatedUser = Updateable<UserTable>;
 
 export type UserEdge = Edge<User>;
 export type UserConnection = Connection<UserEdge>;
+
+export interface UserPayload extends Payload {
+  user: User | null;
+}

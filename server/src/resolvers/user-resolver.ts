@@ -62,6 +62,9 @@ const UserResolver = {
     createUser(_parent: Root, user: NewUser) {
       return UserService.createUser(user);
     },
+    updateUser(_parent: Root, user: UpdatedUser) {
+      return UserService.updateUser(user);
+    },
   },
 };
 
